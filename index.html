@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Kop Menu Digital</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NZ4MKSGQV5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+      gtag("config", "G-NZ4MKSGQV5");
+    </script>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="menu-app">
+      <header class="topbar">
+        <div class="topbar-row">
+          <div class="brand-block">
+            <img class="brand-logo" src="kopenhagen-logo.png" alt="Kopenhagen" />
+            <p class="store-location">Shopping Tacaruna</p>
+            <div class="store-contact">
+              <a
+                class="store-instagram"
+                href="https://www.instagram.com/kopenhagen.tacaruna"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir Instagram @kopenhagen.tacaruna"
+              >
+                <span class="instagram-icon" aria-hidden="true"></span>
+                kopenhagen.tacaruna
+              </a>
+              <span class="contact-divider" aria-hidden="true">|</span>
+              <a
+                class="store-whatsapp"
+                href="https://wa.me/558131031548"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir WhatsApp da Kopenhagen Tacaruna"
+              >
+                <span class="whatsapp-icon" aria-hidden="true"></span>
+                (81) 3103-1548
+              </a>
+            </div>
+          </div>
+          <h1>Kop Menu</h1>
+        </div>
+      </header>
+
+      <section class="menu-tools" aria-label="Buscar e filtrar cardápio">
+        <label class="search">
+          <span>Buscar no cardápio</span>
+          <input id="searchInput" type="search" placeholder="Ex.: capuccino, brownie..." />
+        </label>
+
+        <nav class="category-tabs" aria-label="Categorias">
+          <button class="tab active" type="button" data-category="todos">Todos</button>
+          <button class="tab" type="button" data-category="salgados">Salgados</button>
+          <button class="tab" type="button" data-category="bebidas-quentes">Bebidas Quentes</button>
+          <button class="tab" type="button" data-category="bebidas-geladas">Bebidas Geladas</button>
+          <button class="tab" type="button" data-category="sobremesas">Sobremesas</button>
+          <button class="tab" type="button" data-category="sorvetes-sundaes-milkshakes">Sorvetes, Sundaes e Milkshakes</button>
+        </nav>
+      </section>
+
+      <section class="section-title">
+        <div>
+          <span class="kicker">Cardápio digital</span>
+          <h2 id="categoryTitle">Bebidas Quentes</h2>
+        </div>
+        <small id="itemCount">0 itens</small>
+      </section>
+
+      <section id="menuList" class="menu-list" aria-live="polite"></section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
