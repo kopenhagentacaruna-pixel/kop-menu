@@ -383,12 +383,12 @@ function resetTabsToAll() {
   });
 }
 
-if (menuList && searchInput && categoryTitle) {
+if (menuList && categoryTitle) {
   updateStickyOffset();
   window.addEventListener("resize", updateStickyOffset);
   resetTabsToAll();
 
-  searchInput.addEventListener("input", (event) => {
+  searchInput?.addEventListener("input", (event) => {
     searchTerm = event.target.value;
     renderMenu();
   });

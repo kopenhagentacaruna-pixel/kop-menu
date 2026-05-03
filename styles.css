@@ -96,7 +96,7 @@ textarea {
 
 .store-location {
   margin: 0;
-  color: rgba(248, 221, 188, 0.86);
+  color: #f8ddbc;
   font-size: 0.76rem;
   font-weight: 700;
   text-align: center;
@@ -118,7 +118,7 @@ textarea {
   justify-content: center;
   gap: 5px;
   margin: 0;
-  color: rgba(248, 221, 188, 0.78);
+  color: #f8ddbc;
   font-size: 0.7rem;
   font-weight: 700;
   text-decoration: none;
@@ -126,7 +126,7 @@ textarea {
 }
 
 .contact-divider {
-  color: rgba(248, 221, 188, 0.54);
+  color: #f8ddbc;
   font-size: 0.7rem;
   font-weight: 700;
 }
@@ -174,9 +174,7 @@ textarea {
 }
 
 .search {
-  padding: 0 14px;
-  display: block;
-  margin-bottom: 12px;
+  display: none;
 }
 
 .search span {
@@ -200,8 +198,8 @@ textarea {
 
 .category-tabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 6px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 7px;
   overflow: visible;
   padding: 0 14px 8px;
 }
@@ -210,15 +208,38 @@ textarea {
   min-width: 0;
   border: 1px solid var(--line);
   border-radius: 999px;
-  padding: 8px 6px;
+  padding: 8px 7px;
   background: var(--paper);
   color: var(--wine);
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   font-weight: 900;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  line-height: 1.08;
   cursor: pointer;
+}
+
+.tab[data-category="todos"] {
+  grid-column: 3 / span 2;
+}
+
+.tab[data-category="salgados"] {
+  grid-column: 1 / span 2;
+}
+
+.tab[data-category="bebidas-quentes"] {
+  grid-column: 3 / span 2;
+}
+
+.tab[data-category="bebidas-geladas"] {
+  grid-column: 5 / span 2;
+}
+
+.tab[data-category="sobremesas"] {
+  grid-column: 2 / span 2;
+}
+
+.tab[data-category="sorvetes-sundaes-milkshakes"] {
+  grid-column: 4 / span 2;
 }
 
 .tab.active {
