@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QR Code | Kop Menu</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NZ4MKSGQV5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+      gtag("config", "G-NZ4MKSGQV5");
+    </script>
+    <style>
+      :root {
+        --wine: #991632;
+        --cream: #f8f0e6;
+        --ink: #3b1d17;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background: #fffaf2;
+        color: var(--ink);
+        font-family: Avenir, "Helvetica Neue", Arial, sans-serif;
+      }
+
+      main {
+        width: min(92vw, 460px);
+        border: 0;
+        border-radius: 14px;
+        padding: 26px;
+        background: #fffaf2;
+        text-align: center;
+        box-shadow: none;
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        color: var(--wine);
+        font-size: 1.7rem;
+      }
+
+      p {
+        margin: 0 0 22px;
+        color: #8b6358;
+        font-weight: 700;
+      }
+
+      img {
+        width: min(100%, 320px);
+        height: auto;
+        border: 12px solid #fffaf2;
+        border-radius: 8px;
+      }
+
+      a {
+        display: block;
+        margin-top: 18px;
+        color: var(--wine);
+        font-size: 0.82rem;
+        font-weight: 900;
+        overflow-wrap: anywhere;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Acesse nosso Cardápio</h1>
+      <p>Kopenhagen Tacaruna</p>
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=320x320&margin=12&bgcolor=fffaf2&color=3b1d17&data=https%3A%2F%2Fkopenhagentacaruna-pixel.github.io%2Fkop-menu%2F"
+        alt="QR Code do cardápio digital"
+      />
+      <a href="https://kopenhagentacaruna-pixel.github.io/kop-menu/">
+        kopenhagentacaruna-pixel.github.io/kop-menu
+      </a>
+    </main>
+  </body>
+</html>

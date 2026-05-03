@@ -1,0 +1,686 @@
+[
+  {
+    "id": "item-1777738877361-a7f1db9bf2e028",
+    "name": "Café Expresso",
+    "category": "bebidas-quentes",
+    "description": "Café expresso feito com grão arábica.",
+    "type": "",
+    "image": "cafe-expresso.jpg?v=1777738956788",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 11.9
+      },
+      {
+        "label": "100ml",
+        "price": 19.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-939fdfb94f3ac8",
+    "name": "Café Carioca",
+    "category": "bebidas-quentes",
+    "description": "Café expresso menos intenso.",
+    "type": "",
+    "image": "cafe-carioca.jpg?v=1777739157592",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 11.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-d4ea35de888818",
+    "name": "Café com Leite",
+    "category": "bebidas-quentes",
+    "description": "Café expresso com leite vaporizado.",
+    "type": "",
+    "image": "cafe-com-leite.jpg?v=1777739172593",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 13.9
+      },
+      {
+        "label": "150ml",
+        "price": 20.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-b9c124b36b477",
+    "name": "Canelinha",
+    "category": "bebidas-quentes",
+    "description": "Café, leite vaporizado e canela em pó.",
+    "type": "",
+    "image": "canelinha.jpg?v=1777739213493",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 13.9
+      },
+      {
+        "label": "150ml",
+        "price": 20.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-074a03cb162f2",
+    "name": "Capuccino Tradicional",
+    "category": "bebidas-quentes",
+    "description": "Café expresso com leite, chocolate em lascas, acompanha chantilly.",
+    "type": "",
+    "image": "capuccino-tradicional.jpg?v=1777739236341",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 19.9
+      },
+      {
+        "label": "150ml",
+        "price": 26.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-3fb6fffc9c84a",
+    "name": "Capuccino Língua de Gato",
+    "category": "bebidas-quentes",
+    "description": "Café expresso com leite e chocolate em lascas. Acompanha uma deliciosa Língua de Gato e chantilly.",
+    "type": "",
+    "image": "capuccino-lingua-de-gato.jpg?v=1777739259608",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 23.9
+      },
+      {
+        "label": "150ml",
+        "price": 29.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-578826c22e9d5",
+    "name": "Capuccino Soul Good",
+    "category": "bebidas-quentes",
+    "description": "Café expresso com leite vegetal e minitablete Soul Good, para uma opção equilibrada e saudável, acompanha um minitablete Soul Good.",
+    "type": "",
+    "image": "capuccino-soul-good.jpg?v=1777739297807",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 26.5
+      },
+      {
+        "label": "150ml",
+        "price": 31.5
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-b1088373b12298",
+    "name": "Chocolate Quente",
+    "category": "bebidas-quentes",
+    "description": "Chocolate quente saboroso feito a partir do melhor cacau com uma nota mais intensa.",
+    "type": "",
+    "image": "chocolate-quente.jpg?v=1777739326741",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 14.9
+      },
+      {
+        "label": "150ml",
+        "price": 22.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-943fd48e7e4aa",
+    "name": "Chococcino",
+    "category": "bebidas-quentes",
+    "description": "Deliciosa bebida cremosa com leite vaporizado com chocolate e lascas\nde chocolate ao leite",
+    "type": "",
+    "image": "chococcino.jpg?v=1777739359458",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 19.9
+      },
+      {
+        "label": "150ml",
+        "price": 26.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-f17c3324757028",
+    "name": "Mexicano",
+    "category": "bebidas-quentes",
+    "description": "Chocolate intenso cremoso a base de leite e toque de canela, quente ou gelado, acompanha chantilly.",
+    "type": "",
+    "image": "mexicano.jpg?v=1777739393686",
+    "options": [
+      {
+        "label": "50ml",
+        "price": 19.9
+      },
+      {
+        "label": "150ml",
+        "price": 26.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-83e645cabc34a",
+    "name": "Chá Quente",
+    "category": "bebidas-quentes",
+    "description": "Consulte disponibilidade em loja.",
+    "type": "",
+    "image": "cha-quente.jpg?v=1777739412092",
+    "options": [
+      {
+        "label": "150ml",
+        "price": 10.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-1698b9082dce3",
+    "name": "Doce Pausa - 14,90",
+    "category": "bebidas-quentes",
+    "description": "Café expresso 50ml acompanhando de uma Minitrufa Mil Delícias 12G Diversos sabores para você escolher!",
+    "type": "",
+    "image": "expresso-mil-delicias-14-90.jpg?v=1777739461485",
+    "options": [
+      {
+        "label": "Expresso 50ml",
+        "price": 14.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-c3e119656646d",
+    "name": "Doce Pausa - 19,90",
+    "category": "bebidas-quentes",
+    "description": "Café expresso 50ml acompanhando de um item a sua escolha entre Colher Língua de Gato 10g ou Bombom Nhá Benta 15g ou Bombom Soul Good 20g.",
+    "type": "",
+    "image": "doce-pausa-19-90.jpg?v=1777739541729",
+    "options": [
+      {
+        "label": "Expresso 50ml",
+        "price": 19.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-a66f1f3235d578",
+    "name": "Doce Pausa - 24,90",
+    "category": "bebidas-quentes",
+    "description": "Café expresso 50ml acompanhando de um item a sua escolha entre Canudo de Chocolate 20g ou Chokonut 33g ou Palito São Paulo 25g ou Nhá Benta 30g",
+    "type": "",
+    "image": "doce-pausa-24-90.jpg?v=1777739682880",
+    "options": [
+      {
+        "label": "Expresso 50ml",
+        "price": 24.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-a6adbc97be967",
+    "name": "Cookies",
+    "category": "sobremesas",
+    "description": "Cookie | Sabores baunilha, canela amenteigado e rum (Venda por peso).",
+    "type": "",
+    "image": "cookies.jpg?v=1777739755547",
+    "options": [
+      {
+        "label": "100g",
+        "price": 42.39
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-6b516525918ee",
+    "name": "Barra Nuts",
+    "category": "sobremesas",
+    "description": "Barra Nuts | Barra com nuts de chocolate ao leite ou chocolate amargo (venda por peso)",
+    "type": "",
+    "image": "barra-nuts.jpg?v=1777739797981",
+    "options": [
+      {
+        "label": "100g",
+        "price": 43.79
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-401fd15af87b",
+    "name": "Brownie com Cobertura de Chocolate",
+    "category": "sobremesas",
+    "description": "Brownie | Cremoso e coberto pelo irresistível chocolate ao leite Kopenhagen",
+    "type": "",
+    "image": "brownie-com-cobertura-de-chocolate.jpg?v=1777739844181",
+    "options": [
+      {
+        "label": "55g",
+        "price": 20.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-125a328567b7e",
+    "name": "Pão de Queijo 65g",
+    "category": "salgados",
+    "description": "Pão de queijo Kopenhagen.",
+    "type": "savory",
+    "image": "pao-de-queijo.jpg?v=1777738993389",
+    "options": [
+      {
+        "label": "Unidade (65g)",
+        "price": 10.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-69f46acfa3c2a8",
+    "name": "Mini Pão de Queijo (6 unidades)",
+    "category": "salgados",
+    "description": "Porção de mini pães de queijo Kopenhagen (6 unidades).",
+    "type": "savory",
+    "image": "mini-pao-de-queijo-6-unidades.jpg?v=1777739974347",
+    "options": [
+      {
+        "label": "Porção",
+        "price": 18.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-5d7e620468fc2",
+    "name": "Croissant Caprese",
+    "category": "salgados",
+    "description": "Croissant com recheio de muçarela de búfala, tomates confitados e com pesto\nde manjericão.",
+    "type": "savory",
+    "image": "croissant-caprese.jpg?v=1777740019544",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 26.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777738877361-b8470a5087d2a",
+    "name": "Krok Monsier",
+    "category": "salgados",
+    "description": "Pão brioche com presunto, queijo mussarela, molho bechamel e parmesão",
+    "type": "savory",
+    "image": "krok-monsier.jpg?v=1777740090896",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 29.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777740205475-25d57a24dd9668",
+    "name": "Torta de Frango",
+    "category": "salgados",
+    "description": "Feita com massa Brissé e recheio de frango com requeijão.",
+    "type": "savory",
+    "image": "torta-de-frango.jpg?v=1777740205513",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 29.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777740328927-83305099f06188",
+    "name": "Nhá Benta Bar",
+    "category": "sobremesas",
+    "description": "Escolha sua Nhá Benta favorita e personalize com calda e topping.",
+    "type": "",
+    "image": "nha-benta-bar.jpg?v=1777740383617",
+    "options": [
+      {
+        "label": "Sem Sorvete",
+        "price": 41.9
+      },
+      {
+        "label": "Com Sorvete",
+        "price": 46.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777740508509-70eebb7a36e2f",
+    "name": "Brownie com Sorvete",
+    "category": "sobremesas",
+    "description": "Brownie Kopenhagen com sorvete Kop Krema",
+    "type": "",
+    "image": "brownie-com-sorvete.jpg?v=1777740508516",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 36.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777747613714-f2fd9df3a513e8",
+    "name": "Nhá Benta S'mores",
+    "category": "sobremesas",
+    "description": "Nhá Benta com calda de chocolate Kopenhagen, farofa de castanha de caju e sorvete Kop Krema",
+    "type": "",
+    "image": "nha-benta-s-mores.jpg?v=1777747613763",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 46.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777747762328-0e8103f4f426e8",
+    "name": "Affogato Pistache com Língua de Gato",
+    "category": "sobremesas",
+    "description": "Affogato Pistache com Língua de Gato: sorvete Kop Krema com creme de pistache, castanha de caju triturada, expresso Kopenhagen e língua de gato.",
+    "type": "",
+    "image": "affogato-pistache-com-lingua-de-gato.jpg?v=1777774837568",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 28.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777748105215-b2b264d4702b98",
+    "name": "Kop Krema Língua de Gato",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Casquinha black, sorvete de chocolate, baunilha ou misto e uma deliciosa língua de gato.\nCalda extra por R$ 9,90",
+    "type": "",
+    "image": "kop-krema-lingua-de-gato.jpg?v=1777748105231",
+    "options": [
+      {
+        "label": "Sem Nuts",
+        "price": 18.9
+      },
+      {
+        "label": "Com Nuts",
+        "price": 22.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777748954572-8d02a1eb602e18",
+    "name": "Sundae Língua de Gato",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Sorvete Kop Krema com calda de chocolate Kopenhagen acompanhado da\ndeliciosa Língua de Gato.",
+    "type": "",
+    "image": "sundae-lingua-de-gato.jpg?v=1777748954610",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 25.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777749022305-b79b4664029788",
+    "name": "Sundae Pistache",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Sorvete Kop Krema, creme de pistache\ne trufa de pistache",
+    "type": "",
+    "image": "sundae-pistache.jpg?v=1777749022320",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 25.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777749202422-a7ec5506a767a8",
+    "name": "Sundae de Chocolate com Avelã",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Sorvete Kop Krema com calda de avelã e trufa de Chokonut e nuts.",
+    "type": "",
+    "image": "sundae-de-chocolate-com-avela.jpg?v=1777749202439",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 24.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777749275023-70bbdc1f36aaa8",
+    "name": "Sundae de Coco Cremoso",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Sorvete Kop Krema com calda de coco cremoso, mini tablete de coco crocante e raspas de coco.",
+    "type": "",
+    "image": "sundae-de-coco-cremoso.jpg?v=1777749275035",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 24.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777749436837-7b2d5ff4433cc",
+    "name": "Milkshake Língua de Gato",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Milkshake de baunilha, leite e chocolate ao leite, decorado com Chantilly e uma Língua de Gato",
+    "type": "",
+    "image": "milkshake-lingua-de-gato.jpg?v=1777749436879",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 35.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777749780673-846915ce27e748",
+    "name": "Milkshake de Pistache",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Milkshake de baunilha batido com leite, trufa de pistache, creme de pistache e Chantilly.",
+    "type": "",
+    "image": "milkshake-de-pistache.jpg?v=1777749780719",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 35.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777749851354-8f7f5af27530d8",
+    "name": "Milkshake de Chocolate com Avelã",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Milkshake batido com leite, calda de avelã, mini trufa de Chokonut, Chantilly e nuts.",
+    "type": "",
+    "image": "milkshake-de-chocolate-com-avela.jpg?v=1777749885188",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 36.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777749964188-b5f1ad2c447ba",
+    "name": "Milkshake de Coco Cremoso",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Milkshake de baunilha batido com leite, calda de coco cremoso, mini tablete de coco crocante, Chantilly e raspas de coco.",
+    "type": "",
+    "image": "milkshake-de-coco-cremoso.jpg?v=1777749964202",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 36.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777752986698-40c272cf5d6108",
+    "name": "Matchá",
+    "category": "bebidas-geladas",
+    "description": "Escolha do sabor com Leite Vegetal ou Leite Vegetal com Calda de Morango sem açúcar.",
+    "type": "",
+    "image": "matcha.jpg?v=1777752986723",
+    "options": [
+      {
+        "label": "Matchá",
+        "price": 29.9
+      },
+      {
+        "label": "Matchá com Morango",
+        "price": 29.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777753145567-08a324e72fa15",
+    "name": "Expresso Tônica",
+    "category": "bebidas-geladas",
+    "description": "Café expresso, água tônica, xarope de limão ou calda de Morango e gelo",
+    "type": "",
+    "image": "expresso-tonica.jpg?v=1777753166577",
+    "options": [
+      {
+        "label": "Expresso Tônica Limão",
+        "price": 24.9
+      },
+      {
+        "label": "Expresso Tônica Morango",
+        "price": 24.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777753295697-0381706b418428",
+    "name": "Café Gelado",
+    "category": "bebidas-geladas",
+    "description": "Café expresso com gelo.",
+    "type": "",
+    "image": "cafe-gelado.jpg?v=1777753295710",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 24.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777753406298-ed1910138e4fa8",
+    "name": "Iced Chococoffee",
+    "category": "bebidas-geladas",
+    "description": "Iced Chococoffee",
+    "type": "",
+    "image": "iced-chococofee.jpg?v=1777753406318",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 0
+      }
+    ]
+  },
+  {
+    "id": "item-1777753615098-27ae32739608e8",
+    "name": "Soda Italiana",
+    "category": "bebidas-geladas",
+    "description": "Xarope de maçã verde, cranberry, limão siciliano ou pink lemonade\ncom água gaseficada e gelo.",
+    "type": "",
+    "image": "soda-italiana.jpg?v=1777753615145",
+    "options": [
+      {
+        "label": "Maçã Verde",
+        "price": 18.9
+      },
+      {
+        "label": "Cranberry",
+        "price": 18.9
+      },
+      {
+        "label": "Limão Siciliano",
+        "price": 18.9
+      },
+      {
+        "label": "Pink Lemonade",
+        "price": 18.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777753827264-ab0a6a7e8cec68",
+    "name": "Água Mineral",
+    "category": "bebidas-geladas",
+    "description": "500ml",
+    "type": "",
+    "image": "agua-mineral.jpg?v=1777753827281",
+    "options": [
+      {
+        "label": "Com Gás",
+        "price": 9.9
+      },
+      {
+        "label": "Sem Gás",
+        "price": 9.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777754429658-1a853ea3650188",
+    "name": "Milkshake de Cereja",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Sorvete Kop Krema de baunilha, batido com trufa de cereja e calda de cereja amarena com pedaços, finalizado com chantilly, raspas de chocolate ao leite e mini tablete de chocolate ao leite",
+    "type": "",
+    "image": "milkshake-de-cereja.jpg?v=1777774762699",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 36.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777754478855-e87be7ef0532d8",
+    "name": "Sundae Cereja com Cookie Rum",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Sobremesa de Cereja com Cookie Rum: Uma combinação de sorvete Kop Krema, calda de cereja amarena com pedaços, cookie rum e finalização com cacau em pó.",
+    "type": "",
+    "image": "sundae-cereja-com-cookie-rum.jpg?v=1777774698974",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 34.9
+      }
+    ]
+  },
+  {
+    "id": "item-1777774897538-1e555bcaa7144",
+    "name": "Affogato Língua de Gato",
+    "category": "sobremesas",
+    "description": "Clássico affogato feito com sorvete Kop Krema, café expresso e Lingua de Gato.",
+    "type": "",
+    "image": "affogato-lingua-de-gato.jpg?v=1777774897551",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 29.9
+      }
+    ]
+  }
+]
