@@ -173,6 +173,15 @@ textarea {
     linear-gradient(180deg, rgba(248, 240, 230, 1) 0%, rgba(248, 240, 230, 0.96) 78%, rgba(248, 240, 230, 0) 100%);
 }
 
+.accessibility-link {
+  display: block;
+  margin: 0 14px 8px;
+  color: var(--wine);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-align: center;
+}
+
 .search {
   display: none;
 }
@@ -277,6 +286,16 @@ textarea {
 .menu-list {
   display: grid;
   gap: 12px;
+}
+
+.privacy-note {
+  margin-top: 22px;
+  border-top: 1px solid rgba(215, 160, 154, 0.7);
+  padding: 14px 4px 0;
+  color: var(--muted);
+  font-size: 0.68rem;
+  line-height: 1.35;
+  text-align: center;
 }
 
 .menu-card {

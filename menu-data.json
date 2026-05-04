@@ -585,7 +585,7 @@
   },
   {
     "id": "item-1777753406298-ed1910138e4fa8",
-    "name": "Iced Chococoffee",
+    "name": "Capuccino Gelado Iced Chococoffee",
     "category": "bebidas-geladas",
     "description": "Iced Chococoffee",
     "type": "",
@@ -593,7 +593,7 @@
     "options": [
       {
         "label": "Unidade",
-        "price": 0
+        "price": 29.9
       }
     ]
   },

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cardápio Acessível | Kopenhagen Tacaruna</title>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NZ4MKSGQV5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag("js", new Date());
+      gtag("config", "G-NZ4MKSGQV5");
+    </script>
+    <style>
+      :root {
+        --wine: #991632;
+        --cream: #fffaf2;
+        --ink: #241815;
+        --muted: #6f554d;
+        --line: #d7a09a;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--cream);
+        color: var(--ink);
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 18px;
+        line-height: 1.5;
+      }
+
+      .skip-link {
+        position: absolute;
+        left: 12px;
+        top: 12px;
+        z-index: 2;
+        transform: translateY(-150%);
+        border-radius: 6px;
+        padding: 10px 12px;
+        background: var(--wine);
+        color: #fff;
+      }
+
+      .skip-link:focus {
+        transform: translateY(0);
+      }
+
+      header,
+      main {
+        width: min(100%, 760px);
+        margin: 0 auto;
+        padding: 18px;
+      }
+
+      header {
+        border-bottom: 3px solid var(--wine);
+      }
+
+      h1,
+      h2,
+      h3 {
+        color: var(--wine);
+        line-height: 1.15;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 2rem;
+      }
+
+      header p {
+        margin: 4px 0;
+        font-weight: 700;
+      }
+
+      nav ul,
+      .menu-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      nav li {
+        margin: 8px 0;
+      }
+
+      a {
+        color: var(--wine);
+        font-weight: 700;
+      }
+
+      section {
+        border-bottom: 1px solid var(--line);
+        padding: 18px 0;
+      }
+
+      section:last-child {
+        border-bottom: 0;
+      }
+
+      .item {
+        margin: 0 0 18px;
+      }
+
+      .item h3 {
+        margin: 0 0 4px;
+        font-size: 1.12rem;
+      }
+
+      .description {
+        margin: 0 0 6px;
+        color: var(--muted);
+      }
+
+      .prices {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      .status {
+        padding: 18px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      footer {
+        width: min(100%, 760px);
+        margin: 0 auto;
+        border-top: 1px solid var(--line);
+        padding: 18px;
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip-link" href="#cardapio">Ir para o cardápio</a>
+
+    <header>
+      <h1>Cardápio Acessível</h1>
+      <p>Kopenhagen Tacaruna</p>
+      <p>
+        Instagram:
+        <a href="https://www.instagram.com/kopenhagen.tacaruna">kopenhagen.tacaruna</a>
+      </p>
+      <p>
+        WhatsApp:
+        <a href="https://wa.me/558131031548">(81) 3103-1548</a>
+      </p>
+      <p>
+        <a href="./index.html">Voltar para o cardápio visual</a>
+      </p>
+    </header>
+
+    <main id="cardapio" tabindex="-1">
+      <h2>Itens do cardápio</h2>
+      <nav aria-label="Categorias do cardápio">
+        <ul id="categoryLinks"></ul>
+      </nav>
+      <div id="menuContent" class="status" aria-live="polite">Carregando cardápio.</div>
+    </main>
+
+    <footer>
+      Este cardápio usa Google Analytics para acompanhar acessos e melhorar a experiência de navegação.
+    </footer>
+
+    <script src="./acessivel.js"></script>
+  </body>
+</html>
