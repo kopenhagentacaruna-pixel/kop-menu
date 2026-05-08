@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Etiquetas de Preços</title>
+    <link rel="stylesheet" href="./etiquetas.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-label="Gerador de etiquetas de preços">
+        <aside class="panel controls-panel">
+          <div class="brand">
+            <img src="./assets/brand/kopenhagen-logo.png" alt="Kopenhagen" />
+            <div>
+              <h1>Etiquetas</h1>
+              <p>15 etiquetas por folha A4 paisagem</p>
+            </div>
+          </div>
+
+
+          <div class="status-row top-actions">
+            <input id="reportInput" type="file" accept="application/pdf,.pdf" hidden />
+            <button id="loadReportButton" class="primary" type="button">Carregar Relatório 5301</button>
+            <button id="clearButton" class="primary" type="button">Limpar Dados</button>
+            <button id="imageButton" class="primary" type="button">Gerar Etiquetas</button>
+          </div>
+
+          <p id="reportStatus" class="report-status" aria-live="polite"></p>
+          <div id="imageResults" class="image-results" aria-live="polite"></div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Peso</th>
+                  <th>Preço</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="productRows"></tbody>
+            </table>
+          </div>
+
+          <footer class="app-footer">
+            <strong>Kopenhagen Tacaruna</strong>
+            <span>Esta ferramenta usa Google Analytics para acompanhar acessos e melhorar a experiência de uso.</span>
+          </footer>
+        </aside>
+      </section>
+
+      <div id="printArea" class="print-area print-only" aria-label="Área para impressão"></div>
+    </main>
+
+    <script src="./relatorio-5301-browser.js"></script>
+    <script src="./vendor/jspdf/jspdf.umd.min.js"></script>
+    <script src="./etiquetas.js"></script>
+  </body>
+</html>
