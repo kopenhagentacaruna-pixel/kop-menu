@@ -453,7 +453,7 @@ td input {
 
 @media print {
   @page {
-    size: A4 landscape;
+    size: 297mm 210mm;
     margin: 0.32cm 0 0 0;
   }
 
@@ -490,8 +490,8 @@ td input {
   }
 
   .sheet {
-    width: 30.839cm;
-    height: 21cm;
+    width: 297mm;
+    height: 210mm;
     grid-template-columns: 7.752cm 8.149cm 7.938cm 7cm;
     grid-template-rows: repeat(5, 4.30cm);
     justify-content: start;
