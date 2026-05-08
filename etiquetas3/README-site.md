@@ -17,7 +17,6 @@ Pasta pronta para publicar no GitHub Pages.
 - `etiquetas.css`
 - `etiquetas.js`
 - `relatorio-5301-browser.js`
-- `pdf-etiquetas.js`
 - `assets/brand/kopenhagen-logo.png`
 - `.nojekyll`
 
