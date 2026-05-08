@@ -173,6 +173,16 @@ rowsEl.addEventListener("click", (event) => {
 
 document.querySelector("#printButton").addEventListener("click", () => window.print());
 
+document.querySelector("#pdfButton").addEventListener("click", () => {
+  if (!window.downloadEtiquetasPdf) {
+    reportStatus.textContent = "O gerador de PDF não foi carregado. Atualize a página e tente novamente.";
+    return;
+  }
+
+  window.downloadEtiquetasPdf(getExpandedLabels());
+  reportStatus.textContent = "PDF gerado. Abra o arquivo e imprima em tamanho real, sem ajustar à página.";
+});
+
 document.querySelector("#loadReportButton").addEventListener("click", () => {
   reportInput.click();
 });
