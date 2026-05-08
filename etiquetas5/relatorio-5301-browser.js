@@ -310,7 +310,52 @@
     return items;
   }
 
-  async function extractRelatorio5301FromArrayBuffer(arrayBuffer) {
+  function uniqueItems(items) {
+    const seen = new Set();
+    return items.filter((item) => {
+      const key = `${item.name.toLowerCase()}|${item.weight.toLowerCase()}|${item.price}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+  }
+
+  async function extractWithPdfJs(arrayBuffer) {
+    const pdfjsUrl =
+      typeof document !== "undefined"
+        ? new URL("./vendor/pdfjs/pdf.mjs", document.currentScript ? document.currentScript.src : global.location.href).href
+        : "./vendor/pdfjs/pdf.mjs";
+    const loadPdfJs = new Function("url", "return import(url)");
+    const pdfjs = await loadPdfJs(pdfjsUrl);
+
+    if (pdfjs.GlobalWorkerOptions && typeof document !== "undefined") {
+      pdfjs.GlobalWorkerOptions.workerSrc = new URL("./vendor/pdfjs/pdf.worker.mjs", pdfjsUrl).href;
+    }
+
+    const loadingTask = pdfjs.getDocument({ data: new Uint8Array(arrayBuffer), disableFontFace: true });
+    const pdf = await loadingTask.promise;
+    const items = [];
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+      const page = await pdf.getPage(pageNumber);
+      const textContent = await page.getTextContent({
+        disableCombineTextItems: false,
+        includeMarkedContent: false,
+      });
+      const fragments = textContent.items
+        .filter((item) => item && typeof item.str === "string" && item.str.trim())
+        .map((item) => ({
+          text: item.str.replace(/\s+/g, " ").trim(),
+          x: item.transform[4],
+          y: item.transform[5],
+        }));
+      items.push(...parsePositionedFragments(fragments));
+    }
+
+    return uniqueItems(items);
+  }
+
+  async function extractWithBuiltInReader(arrayBuffer) {
     const pdfBytes = new Uint8Array(arrayBuffer);
     const items = [];
     const streams = await extractStreams(pdfBytes);
@@ -321,13 +366,13 @@
       items.push(...parsePositionedFragments(fragments));
     }
 
-    const seen = new Set();
-    return items.filter((item) => {
-      const key = `${item.name.toLowerCase()}|${item.weight.toLowerCase()}|${item.price}`;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
+    return uniqueItems(items);
+  }
+
+  async function extractRelatorio5301FromArrayBuffer(arrayBuffer) {
+    const pdfJsItems = await extractWithPdfJs(arrayBuffer).catch(() => []);
+    if (pdfJsItems.length) return pdfJsItems;
+    return extractWithBuiltInReader(arrayBuffer);
   }
 
   global.extractRelatorio5301FromArrayBuffer = extractRelatorio5301FromArrayBuffer;

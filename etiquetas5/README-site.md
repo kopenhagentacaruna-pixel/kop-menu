@@ -17,7 +17,9 @@ Pasta pronta para publicar no GitHub Pages.
 - `etiquetas.css`
 - `etiquetas.js`
 - `relatorio-5301-browser.js`
+- `vendor/pdfjs/pdf.mjs`
+- `vendor/pdfjs/pdf.worker.mjs`
 - `assets/brand/kopenhagen-logo.png`
 - `.nojekyll`
 
-O leitor do Relatorio 5301 roda direto no navegador, sem servidor e sem Python.
+O leitor do Relatorio 5301 roda direto no navegador, sem servidor e sem Python. A pasta `vendor/pdfjs` precisa subir junto, porque ela garante a leitura do PDF em outros computadores.
