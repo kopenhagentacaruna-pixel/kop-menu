@@ -279,10 +279,44 @@ body.edit-mode .image-results {
 }
 
 .table-wrap {
+  position: relative;
   min-height: 0;
   max-height: 58vh;
   overflow: auto;
   border-top: 1px solid var(--line);
+  padding-right: 46px;
+}
+
+.scroll-controls {
+  position: sticky;
+  right: 0;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  float: right;
+  width: 38px;
+  margin-right: -46px;
+  padding: 8px 4px;
+  transform: translateY(-50%);
+  background: rgba(255, 250, 242, 0.96);
+  border: 1px solid rgba(222, 201, 189, 0.9);
+  border-radius: 8px 0 0 8px;
+  box-shadow: -4px 8px 18px rgba(52, 26, 20, 0.12);
+}
+
+.scroll-controls button {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 42px;
+  border-color: var(--wine);
+  background: var(--wine);
+  color: #fff6e8;
+  padding: 0;
+  font-size: 1.15rem;
+  line-height: 1;
 }
 
 
@@ -313,7 +347,7 @@ td {
   border-bottom: 1px solid rgba(222, 201, 189, 0.72);
   padding: 8px;
   text-align: left;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
 th {
@@ -327,16 +361,20 @@ th {
 }
 
 th:nth-child(1) {
-  width: 44%;
+  width: 38%;
 }
 
 th:nth-child(2),
 th:nth-child(3) {
-  width: 19%;
+  width: 16%;
 }
 
 th:nth-child(4) {
-  width: 18%;
+  width: 15%;
+}
+
+th:nth-child(5) {
+  width: 15%;
 }
 
 td input {
@@ -345,17 +383,46 @@ td input {
 }
 
 .row-actions {
-  display: flex;
+  display: grid;
   gap: 6px;
+  justify-items: stretch;
 }
 
 .row-button {
-  width: 32px;
-  height: 32px;
-  padding: 0;
+  width: 100%;
+  min-width: 72px;
+  height: auto;
+  padding: 7px 8px;
   color: var(--wine-dark);
-  font-size: 1.05rem;
-  line-height: 1;
+  font-size: 0.72rem;
+  line-height: 1.1;
+}
+
+.position-map {
+  display: grid;
+  grid-template-columns: repeat(3, 13px);
+  grid-template-rows: repeat(5, 9px);
+  gap: 2px;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  padding: 4px;
+  border: 1px solid rgba(222, 201, 189, 0.9);
+  border-radius: 6px;
+  background: #fffdf8;
+}
+
+.position-map span {
+  width: 13px;
+  height: 9px;
+  border: 1px solid rgba(142, 23, 48, 0.25);
+  border-radius: 2px;
+  background: #f7efe4;
+}
+
+.position-map .active {
+  border-color: var(--wine);
+  background: var(--wine);
 }
 
 .preview-panel {

@@ -79,6 +79,15 @@ function getExpandedLabels() {
   return products;
 }
 
+function positionMap(index) {
+  const position = index % LABELS_PER_PAGE;
+  return `
+    <div class="position-map" aria-label="Etiqueta ${position + 1} na folha">
+      ${Array.from({ length: LABELS_PER_PAGE }, (_, mapIndex) => `<span class="${mapIndex === position ? "active" : ""}"></span>`).join("")}
+    </div>
+  `;
+}
+
 function activeProducts() {
   return products.filter((product) => product.name || product.weight || product.price);
 }
@@ -93,10 +102,11 @@ function renderRows() {
           <td><input value="${escapeHtml(product.price)}" data-field="price" data-index="${index}" aria-label="Preço" /></td>
           <td>
             <div class="row-actions">
-              <button class="row-button" type="button" data-duplicate="${index}" aria-label="Duplicar lançamento">+</button>
-              <button class="row-button" type="button" data-remove="${index}" aria-label="Excluir lançamento">×</button>
+              <button class="row-button" type="button" data-duplicate="${index}" aria-label="Duplicar lançamento">Duplicar</button>
+              <button class="row-button" type="button" data-remove="${index}" aria-label="Limpar lançamento">Limpar</button>
             </div>
           </td>
+          <td>${positionMap(index)}</td>
         </tr>
       `,
     )
@@ -175,6 +185,14 @@ rowsEl.addEventListener("click", (event) => {
   products.splice(Number(removeButton.dataset.remove), 1);
   products = normalizeProducts(products);
   render();
+});
+
+document.querySelectorAll("button[data-scroll-list]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const tableWrap = rowsEl.closest(".table-wrap");
+    const direction = button.dataset.scrollList === "up" ? -1 : 1;
+    tableWrap.scrollBy({ top: direction * Math.max(180, tableWrap.clientHeight * 0.75), behavior: "smooth" });
+  });
 });
 
 function cm(value) {

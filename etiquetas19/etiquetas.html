@@ -30,6 +30,10 @@
           <div id="imageResults" class="image-results" aria-live="polite"></div>
 
           <div class="table-wrap">
+            <div class="scroll-controls" aria-label="Controles de rolagem da lista">
+              <button type="button" data-scroll-list="up" aria-label="Subir lista">↑</button>
+              <button type="button" data-scroll-list="down" aria-label="Descer lista">↓</button>
+            </div>
             <table>
               <thead>
                 <tr>
@@ -37,6 +41,7 @@
                   <th>Peso</th>
                   <th>Preço</th>
                   <th>Ação</th>
+                  <th>Posição</th>
                 </tr>
               </thead>
               <tbody id="productRows"></tbody>
