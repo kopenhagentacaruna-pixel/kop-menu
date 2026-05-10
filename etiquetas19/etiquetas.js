@@ -221,7 +221,7 @@ function drawLabel(context, product, labelIndex, x, y, width, height) {
   const childIndex = labelIndex + Math.floor(labelIndex / 3) + 1;
   const isFirstColumn = childIndex % 4 === 1;
   const row = Math.floor(labelIndex / 3);
-  const rowAdjustments = [-0.5, -0.5, -0.5, -1, -1.5];
+  const rowAdjustments = [0, -0.5, -1, -1.5, -2];
   const rowShift = cm(rowAdjustments[row] || 0);
   const rightPadding = isFirstColumn ? cm(0.83) : cm(0.03);
   const leftPadding = cm(0.03);
@@ -270,6 +270,7 @@ function renderLabelPageImage(pageProducts) {
   canvas.height = Math.round(cm(21));
   const context = canvas.getContext("2d");
   const columns = [cm(7.752), cm(8.149), cm(7.938)];
+  const columnAdjustments = [cm(0.1), -cm(0.8), -cm(0.8)];
   const rowHeight = cm(4.3);
 
   context.fillStyle = "#fff";
@@ -278,7 +279,7 @@ function renderLabelPageImage(pageProducts) {
   for (let index = 0; index < LABELS_PER_PAGE; index += 1) {
     const row = Math.floor(index / 3);
     const col = index % 3;
-    const x = columns.slice(0, col).reduce((sum, value) => sum + value, 0);
+    const x = columns.slice(0, col).reduce((sum, value) => sum + value, 0) + columnAdjustments[col];
     const y = row * rowHeight;
     drawLabel(context, pageProducts[index] || {}, index, x, y, columns[col], rowHeight);
   }
