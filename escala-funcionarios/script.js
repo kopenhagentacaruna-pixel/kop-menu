@@ -1,4 +1,4 @@
-const STORAGE_KEY = "escalaFuncionarios.v7";
+const STORAGE_KEY = "escalaFuncionarios.v8";
 const storeName = "Kopenhagen Tacaruna";
 const weekDays = ["segunda-feira", "terca-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sabado", "domingo"];
 const employees = [
@@ -7,16 +7,20 @@ const employees = [
   { id: "jonatan", name: "Jonatan Samuel", shortName: "Jonatan Samuel", role: "Atendente de Loja", sundayStreak: 0 },
   { id: "ana", name: "Ana Beatriz", shortName: "Ana Beatriz", role: "Atendente de Loja", sundayStreak: 0 },
 ];
-const normalShifts = [
-  { start: "09:00", end: "17:00", breakStart: "14:00", breakEnd: "15:00" },
-  { start: "12:00", end: "20:00", breakStart: "15:00", breakEnd: "16:00" },
-  { start: "14:00", end: "22:00", breakStart: "17:00", breakEnd: "18:00" },
-];
-const shortDayShifts = [
-  { start: "12:00", end: "21:00", breakStart: "15:00", breakEnd: "16:00" },
-  { start: "12:00", end: "21:00", breakStart: "16:00", breakEnd: "17:00" },
-  { start: "12:00", end: "21:00", breakStart: "17:00", breakEnd: "18:00" },
-];
+const baseShiftsByEmployee = {
+  ana: { start: "14:00", end: "22:00", breakStart: "17:00", breakEnd: "18:00" },
+  allan: { start: "14:00", end: "22:00", breakStart: "18:00", breakEnd: "19:00" },
+  jonatan: { start: "12:00", end: "20:00", breakStart: "16:00", breakEnd: "17:00" },
+  rayanne: { start: "10:00", end: "18:00", breakStart: "14:00", breakEnd: "15:00" },
+};
+const preferredWeeklyOffDays = {
+  allan: 0,
+  rayanne: 1,
+  jonatan: 2,
+  ana: 3,
+};
+const sundayOffCycleStart = "2026-05-03";
+const sundayOffCycle = ["allan", "rayanne", "jonatan", "ana"];
 const officialHolidays = {
   "2026-03-06": "Data Magna",
   "2026-04-03": "Sexta Feira da Paixao",
@@ -195,11 +199,15 @@ function holidayName(dayIndex) {
 }
 
 function dayShifts(dayIndex) {
-  return dayIndex === 6 || isHoliday(dayIndex) ? shortDayShifts : normalShifts;
+  return employees.map((employee) => getBaseShift(employee.id));
 }
 
 function dayHours(dayIndex) {
   return dayIndex === 6 || isHoliday(dayIndex) ? "12h as 21h" : "9h as 22h";
+}
+
+function getBaseShift(employeeId) {
+  return { ...baseShiftsByEmployee[employeeId] };
 }
 
 function render() {
@@ -383,9 +391,20 @@ function getOffDayIndexesByKind(schedule, employeeId, kind) {
 }
 
 function hasSundayOffRuleInWeek(employeeId) {
-  return Object.entries(fixedOffRules).some(([dateKey, rule]) => {
-    return rule.employeeId === employeeId && rule.note.includes("03 Domingos") && getDayIndexInCurrentWeek(dateKey) === 6;
-  });
+  const sundayKey = toInputDate(addDays(state.weekStart, 6));
+  return getSundayOffEmployeeId(sundayKey) === employeeId;
+}
+
+function getSundayOffEmployeeId(dateKey) {
+  const fixedSundayRule = fixedOffRules[dateKey];
+  if (fixedSundayRule?.note.includes("03 Domingos")) return fixedSundayRule.employeeId;
+
+  const target = new Date(`${dateKey}T00:00:00`);
+  if (target.getDay() !== 0 || dateKey < sundayOffCycleStart) return null;
+
+  const cycleStart = new Date(`${sundayOffCycleStart}T00:00:00`);
+  const weeksSinceStart = Math.round((target - cycleStart) / (7 * 86400000));
+  return sundayOffCycle[weeksSinceStart % sundayOffCycle.length];
 }
 
 function getAssignment(employeeId, dayIndex) {
@@ -394,43 +413,93 @@ function getAssignment(employeeId, dayIndex) {
 
 function autoFillSchedule() {
   const schedule = {};
-  const offCounts = Object.fromEntries(employees.map((employee) => [employee.id, 0]));
-  const sundayRuleEmployeeIds = new Set(
-    Object.entries(fixedOffRules)
-      .filter(([dateKey, rule]) => getDayIndexInCurrentWeek(dateKey) === 6 && rule.note.includes("03 Domingos"))
-      .map(([, rule]) => rule.employeeId)
-  );
-  sundayRuleEmployeeIds.forEach((employeeId) => {
-    offCounts[employeeId] = 1;
-  });
+  const weeklyOffDays = getWeeklyOffDays();
 
   weekDays.forEach((_, dayIndex) => {
     const dateKey = toInputDate(addDays(state.weekStart, dayIndex));
-    const fixedRule = fixedOffRules[dateKey];
-    const offEmployee =
-      employees.find((employee) => employee.id === fixedRule?.employeeId) ||
-      chooseOffEmployee(offCounts, dayIndex);
-    const shifts = dayShifts(dayIndex);
-    const workers = offEmployee ? employees.filter((employee) => employee.id !== offEmployee.id) : employees;
     schedule[dayIndex] = {};
-    if (offEmployee) offCounts[offEmployee.id] += 1;
 
     employees.forEach((employee) => {
-      if (employee.id === offEmployee?.id) {
+      schedule[dayIndex][employee.id] = getBaseShift(employee.id);
+    });
+
+    employees.forEach((employee) => {
+      if (weeklyOffDays[employee.id] === dayIndex) {
         schedule[dayIndex][employee.id] = {
           off: true,
-          note: fixedRule?.note || (dayIndex === 6 && employee.sundayStreak >= 2 ? "FOLGA - 03 Domingos" : holidayOffLabel(dayIndex)),
+          note: hasSundayOffRuleInWeek(employee.id) && dayIndex === 6 ? "FOLGA - 03 Domingos" : "FOLGA",
         };
-        return;
       }
-
-      const shift = shifts[workers.findIndex((worker) => worker.id === employee.id)] || shifts[0];
-      schedule[dayIndex][employee.id] = { ...shift };
     });
+
+    const fixedRule = fixedOffRules[dateKey];
+    if (fixedRule) {
+      schedule[dayIndex][fixedRule.employeeId] = {
+        off: true,
+        note: fixedRule.note,
+      };
+    }
   });
+
+  employees.forEach((employee) => {
+    const weeklyDays = getOffDayIndexesByKind(schedule, employee.id, "weekly");
+    if (weeklyDays.length === 0) {
+      const dayIndex = chooseWeeklyOffDay(employee.id, getWeeklyOffDayMap(schedule));
+      if (dayIndex !== null) {
+        schedule[dayIndex][employee.id] = {
+          off: true,
+          note: hasSundayOffRuleInWeek(employee.id) && dayIndex === 6 ? "FOLGA - 03 Domingos" : "FOLGA",
+        };
+      }
+    }
+  });
+
+  applyCoverage(schedule);
 
   state.schedule = schedule;
   render();
+}
+
+function getWeeklyOffDays() {
+  const weeklyOffDays = {};
+  employees.forEach((employee) => {
+    weeklyOffDays[employee.id] = hasSundayOffRuleInWeek(employee.id)
+      ? 6
+      : chooseWeeklyOffDay(employee.id, weeklyOffDays);
+  });
+  return weeklyOffDays;
+}
+
+function getWeeklyOffDayMap(schedule) {
+  return Object.fromEntries(
+    employees.map((employee) => {
+      const dayIndex = getOffDayIndexesByKind(schedule, employee.id, "weekly")[0];
+      return [employee.id, dayIndex ?? null];
+    })
+  );
+}
+
+function chooseWeeklyOffDay(employeeId, weeklyOffDays) {
+  const preferred = preferredWeeklyOffDays[employeeId] ?? 0;
+  const occupiedCounts = Object.values(weeklyOffDays).reduce((counts, dayIndex) => {
+    if (dayIndex !== null && dayIndex !== undefined) counts[dayIndex] = (counts[dayIndex] || 0) + 1;
+    return counts;
+  }, {});
+  const candidates = weekDays
+    .map((_, dayIndex) => dayIndex)
+    .filter((dayIndex) => {
+      const dateKey = toInputDate(addDays(state.weekStart, dayIndex));
+      if (dayIndex === 6) return false;
+      if (isHoliday(dayIndex)) return false;
+      return fixedOffRules[dateKey]?.employeeId !== employeeId;
+    })
+    .sort((a, b) => {
+      const aDistance = Math.abs(a - preferred);
+      const bDistance = Math.abs(b - preferred);
+      return (occupiedCounts[a] || 0) - (occupiedCounts[b] || 0) || aDistance - bDistance || a - b;
+    });
+
+  return candidates[0] ?? null;
 }
 
 function moveEmployeeOffDay(employeeId, targetDayIndex) {
@@ -462,6 +531,8 @@ function moveEmployeeOffDay(employeeId, targetDayIndex) {
     ? makeWorkAssignment(targetOffEmployee.id, targetDayIndex, nextSchedule)
     : { ...employeeTargetAssignment };
   nextSchedule[targetDayIndex][employeeId] = { off: true, note: currentNote };
+
+  applyCoverage(nextSchedule);
 
   const validation = validateSchedule(nextSchedule);
   if (!validation.valid) {
@@ -495,6 +566,8 @@ function setEmployeeOffSlot(employeeId, kind, slotIndex, targetDayIndex) {
     nextSchedule[targetDayIndex][employeeId] = { off: true, note };
   }
 
+  applyCoverage(nextSchedule);
+
   const validation = validateSchedule(nextSchedule);
   if (!validation.valid) {
     showValidation(validation.message);
@@ -512,13 +585,42 @@ function cloneSchedule(schedule) {
 }
 
 function makeWorkAssignment(employeeId, dayIndex, schedule) {
-  const shifts = dayShifts(dayIndex);
-  const workers = employees.filter((employee) => employee.id !== employeeId && !schedule[dayIndex]?.[employee.id]?.off);
-  const usedIndexes = workers
-    .map((employee) => findShiftIndex(schedule[dayIndex]?.[employee.id], shifts))
-    .filter((index) => index >= 0);
-  const availableIndex = shifts.findIndex((_, index) => !usedIndexes.includes(index));
-  return { ...(shifts[availableIndex >= 0 ? availableIndex : 0]) };
+  return getBaseShift(employeeId);
+}
+
+function applyCoverage(schedule) {
+  weekDays.forEach((_, dayIndex) => {
+    employees.forEach((employee) => {
+      if (!schedule[dayIndex]?.[employee.id]?.off) {
+        schedule[dayIndex][employee.id] = getBaseShift(employee.id);
+      }
+    });
+    coverOffShifts(schedule, dayIndex);
+  });
+}
+
+function coverOffShifts(schedule, dayIndex) {
+  const offEmployees = employees.filter((employee) => schedule[dayIndex]?.[employee.id]?.off);
+  const availableCoverIds = new Set(employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off).map((employee) => employee.id));
+
+  offEmployees.forEach((offEmployee) => {
+    const shiftToCover = getBaseShift(offEmployee.id);
+    const alreadyCovered = employees.some((employee) => {
+      const assignment = schedule[dayIndex]?.[employee.id];
+      return employee.id !== offEmployee.id && !assignment?.off && hasSameShift(assignment, shiftToCover);
+    });
+    if (alreadyCovered) return;
+
+    const coverEmployee = employees.find((employee) => availableCoverIds.has(employee.id));
+    if (!coverEmployee) return;
+
+    schedule[dayIndex][coverEmployee.id] = { ...shiftToCover, coverFor: offEmployee.id };
+    availableCoverIds.delete(coverEmployee.id);
+  });
+}
+
+function hasSameShift(assignment, shift) {
+  return assignment?.start === shift.start && assignment?.end === shift.end;
 }
 
 function findShiftIndex(assignment, shifts) {
@@ -528,13 +630,21 @@ function findShiftIndex(assignment, shifts) {
 
 function validateSchedule(schedule) {
   for (const employee of employees) {
-    const offDays = weekDays.map((_, dayIndex) => dayIndex).filter((dayIndex) => schedule[dayIndex]?.[employee.id]?.off);
-    if (offDays.length === 0) {
+    const weeklyOffDays = getOffDayIndexesByKind(schedule, employee.id, "weekly");
+    if (weeklyOffDays.length === 0) {
       return { valid: false, message: `${employee.name} precisa ter uma folga semanal.` };
+    }
+    if (weeklyOffDays.length > 1 && hasSundayOffRuleInWeek(employee.id)) {
+      return { valid: false, message: `${employee.name} já tem a folga obrigatória de domingo nesta semana.` };
+    }
+    const invalidHolidayRest = weeklyOffDays.find((dayIndex) => isHoliday(dayIndex) && !hasSundayOffRuleInWeek(employee.id));
+    if (invalidHolidayRest !== undefined) {
+      return { valid: false, message: `${employee.name} não pode usar feriado como folga semanal. Escolha outro dia da semana.` };
     }
   }
 
   for (const [dateKey, rule] of Object.entries(fixedOffRules)) {
+    if (!rule.note.includes("03 Domingos")) continue;
     const dayIndex = getDayIndexInCurrentWeek(dateKey);
     if (dayIndex < 0) continue;
     if (!schedule[dayIndex]?.[rule.employeeId]?.off) {
@@ -543,7 +653,45 @@ function validateSchedule(schedule) {
     }
   }
 
+  for (const employee of employees) {
+    for (const dayIndex of weekDays.map((_, index) => index)) {
+      const assignment = schedule[dayIndex]?.[employee.id];
+      if (!assignment || assignment.off) continue;
+      if (!isBreakLegal(assignment)) {
+        return { valid: false, message: `Intervalo de ${employee.name} precisa começar entre 3h e 5h após a entrada.` };
+      }
+    }
+  }
+
+  for (const dayIndex of weekDays.map((_, index) => index)) {
+    const uncovered = getUncoveredOffEmployees(schedule, dayIndex);
+    if (uncovered.length) {
+      return { valid: false, message: `A folga de ${uncovered[0].name} precisa ter cobertura de horário.` };
+    }
+  }
+
   return { valid: true, message: "" };
+}
+
+function isBreakLegal(assignment) {
+  const start = timeToMinutes(assignment.start);
+  const breakStart = timeToMinutes(assignment.breakStart);
+  const workedBeforeBreak = breakStart - start;
+  return workedBeforeBreak >= 180 && workedBeforeBreak <= 300;
+}
+
+function timeToMinutes(value) {
+  const [hours, minutes] = value.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
+function getUncoveredOffEmployees(schedule, dayIndex) {
+  const workers = employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off);
+  return employees.filter((offEmployee) => {
+    if (!schedule[dayIndex]?.[offEmployee.id]?.off) return false;
+    const shiftToCover = getBaseShift(offEmployee.id);
+    return !workers.some((worker) => hasSameShift(schedule[dayIndex]?.[worker.id], shiftToCover));
+  });
 }
 
 function getDayIndexInCurrentWeek(dateKey) {
