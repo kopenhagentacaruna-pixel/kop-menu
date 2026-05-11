@@ -527,11 +527,13 @@ button:focus-visible {
   margin-top: 24px;
 }
 
-.leave-block {
+.leave-block,
+.special-days-block {
   margin-top: 24px;
 }
 
-.leave-table {
+.leave-table,
+.special-days-table {
   width: 100%;
   border-collapse: collapse;
   background: white;
@@ -559,7 +561,9 @@ button:focus-visible {
 }
 
 .leave-table th,
-.leave-table td {
+.leave-table td,
+.special-days-table th,
+.special-days-table td {
   border-bottom: 1px solid var(--line);
   border-right: 1px solid var(--line);
   padding: 9px 10px;
@@ -567,6 +571,40 @@ button:focus-visible {
   vertical-align: middle;
   font-size: 0.76rem;
   font-weight: 400;
+}
+
+.special-days-table th:nth-child(1),
+.special-days-table td:nth-child(1) {
+  width: 24%;
+}
+
+.special-days-table th:nth-child(2),
+.special-days-table td:nth-child(2) {
+  width: 18%;
+}
+
+.work-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--ink);
+  font-size: 0.72rem;
+}
+
+.work-toggle input {
+  width: 16px;
+  min-height: auto;
+  height: 16px;
+  accent-color: var(--primary);
+}
+
+.work-toggle input:disabled + span {
+  color: var(--muted);
+}
+
+.empty-special-day {
+  color: var(--muted);
 }
 
 .leave-select {
@@ -624,7 +662,8 @@ button:focus-visible {
   font-size: 0.66rem;
 }
 
-.leave-table th {
+.leave-table th,
+.special-days-table th {
   background: var(--primary);
   color: white;
   font-size: 0.68rem;
@@ -632,7 +671,8 @@ button:focus-visible {
   text-transform: uppercase;
 }
 
-.leave-table tr:last-child td {
+.leave-table tr:last-child td,
+.special-days-table tr:last-child td {
   border-bottom: 0;
 }
 
@@ -866,24 +906,38 @@ button:focus-visible {
   }
 
   .interval-block,
+  .special-days-block,
   .leave-block {
     margin-top: 0;
   }
 
-  .leave-table {
+  .leave-table,
+  .special-days-table {
     width: 100%;
     table-layout: fixed;
   }
 
   .leave-table th,
-  .leave-table td {
+  .leave-table td,
+  .special-days-table th,
+  .special-days-table td {
     border-color: var(--line);
     padding: 0.9mm 1mm;
     font-size: 5.1pt;
   }
 
-  .leave-table th {
+  .leave-table th,
+  .special-days-table th {
     font-size: 4.9pt;
+  }
+
+  .work-toggle {
+    font-size: 5.1pt;
+  }
+
+  .work-toggle input {
+    width: 3mm;
+    height: 3mm;
   }
 
   .leave-select {

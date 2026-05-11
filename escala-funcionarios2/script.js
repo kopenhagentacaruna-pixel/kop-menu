@@ -1,4 +1,4 @@
-const STORAGE_KEY = "escalaFuncionarios.v9";
+const STORAGE_KEY = "escalaFuncionarios.v11";
 const storeName = "Kopenhagen Tacaruna";
 const weekDays = ["segunda-feira", "terca-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sabado", "domingo"];
 const employees = [
@@ -25,7 +25,6 @@ const preferredWeeklyOffDays = {
   jonatan: 4,
 };
 const sundayOffCycleStart = "2026-05-03";
-const sundayOffCycle = ["allan", "rayanne", "jonatan", "ana"];
 const officialHolidays = {
   "2026-03-06": "Data Magna",
   "2026-04-03": "Sexta Feira da Paixao",
@@ -105,9 +104,11 @@ const els = {
   weekRange: document.querySelector("#weekRange"),
   workTable: document.querySelector("#workTable"),
   intervalTable: document.querySelector("#intervalTable"),
+  specialDaysTable: document.querySelector("#specialDaysTable"),
   leaveTable: document.querySelector("#leaveTable"),
   validationMessage: document.querySelector("#validationMessage"),
   holidayList: document.querySelector("#holidayList"),
+  saveSchedule: document.querySelector("#saveSchedule"),
   printSchedule: document.querySelector("#printSchedule"),
 };
 
@@ -115,6 +116,8 @@ function defaultState() {
   return {
     weekStart: "2026-05-04",
     manualHolidays: {},
+    specialDayWorkers: {},
+    savedSchedules: {},
     schedule: {},
   };
 }
@@ -131,6 +134,45 @@ function loadState() {
 
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function saveCurrentSchedule() {
+  state.savedSchedules[state.weekStart] = cloneSchedule(state.schedule);
+  syncSpecialDayWorkersFromSchedule(state.weekStart, state.schedule);
+  clearFutureSavedSchedules(state.weekStart);
+  saveState();
+  showValidation("Alterações salvas. As próximas escalas serão atualizadas com base nesta semana.");
+}
+
+function loadScheduleForCurrentWeek() {
+  const savedSchedule = state.savedSchedules?.[state.weekStart];
+  if (savedSchedule) {
+    state.schedule = cloneSchedule(savedSchedule);
+    render();
+    showValidation("Escala salva carregada.");
+    return;
+  }
+
+  state.schedule = {};
+  autoFillSchedule();
+}
+
+function syncSpecialDayWorkersFromSchedule(weekStart, schedule) {
+  weekDays.forEach((_, dayIndex) => {
+    const dateKey = toInputDate(addDays(weekStart, dayIndex));
+    const isSpecialDay = dayIndex === 6 || Boolean(officialHolidays[dateKey] || state.manualHolidays[dateKey]);
+    if (!isSpecialDay) return;
+
+    state.specialDayWorkers[dateKey] = employees
+      .filter((employee) => !schedule[dayIndex]?.[employee.id]?.off)
+      .map((employee) => employee.id);
+  });
+}
+
+function clearFutureSavedSchedules(weekStart) {
+  Object.keys(state.savedSchedules || {}).forEach((savedWeekStart) => {
+    if (savedWeekStart > weekStart) delete state.savedSchedules[savedWeekStart];
+  });
 }
 
 function getMonday(date) {
@@ -234,6 +276,7 @@ function render() {
 function renderTables() {
   els.workTable.innerHTML = buildTable("work");
   els.intervalTable.innerHTML = buildTable("interval");
+  els.specialDaysTable.innerHTML = buildSpecialDaysTable();
   els.leaveTable.innerHTML = buildLeaveTable();
 }
 
@@ -339,6 +382,59 @@ function buildLeaveTable() {
   `;
 }
 
+function buildSpecialDaysTable() {
+  const specialDayIndexes = weekDays.map((_, dayIndex) => dayIndex).filter((dayIndex) => dayIndex === 6 || isHoliday(dayIndex));
+  if (!specialDayIndexes.length) {
+    return `
+      <thead>
+        <tr>
+          <th>Dia</th>
+          <th>Data</th>
+          ${employees.map((employee) => `<th>${escapeHtml(employee.shortName)}</th>`).join("")}
+        </tr>
+      </thead>
+      <tbody><tr><td colspan="${employees.length + 2}" class="empty-special-day">Nenhum domingo ou feriado nesta semana.</td></tr></tbody>
+    `;
+  }
+
+  const rows = specialDayIndexes
+    .map((dayIndex) => {
+      const isSunday = dayIndex === 6;
+      const dayName = isHoliday(dayIndex) ? `${weekDays[dayIndex]} - ${holidayName(dayIndex)}` : weekDays[dayIndex];
+      return `
+        <tr>
+          <td>${escapeHtml(dayName)}</td>
+          <td>${formatDate(addDays(state.weekStart, dayIndex))}</td>
+          ${employees
+            .map((employee) => {
+              const works = !getAssignment(employee.id, dayIndex)?.off;
+              return `
+                <td>
+                  <label class="work-toggle">
+                    <input type="checkbox" data-day-index="${dayIndex}" data-employee-id="${employee.id}" ${works ? "checked" : ""} />
+                    <span>Trabalha</span>
+                  </label>
+                </td>
+              `;
+            })
+            .join("")}
+        </tr>
+      `;
+    })
+    .join("");
+
+  return `
+    <thead>
+      <tr>
+        <th>Dia</th>
+        <th>Data</th>
+        ${employees.map((employee) => `<th>${escapeHtml(employee.shortName)}</th>`).join("")}
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+  `;
+}
+
 function getHolidayCompensationCountInWeek(employeeId) {
   return Object.values(holidayCompensationRules).reduce((count, rule) => {
     return count + rule.compensations.filter((item) => item.employeeId === employeeId && isDateInCurrentWeek(item.date)).length;
@@ -350,8 +446,11 @@ function buildLeaveSelectors(employee, kind, count, selectedIndexes) {
   const regularWeeklyIndexes = kind === "weekly" ? selectedIndexes.filter((dayIndex) => dayIndex !== 6) : selectedIndexes;
   return Array.from({ length: count }, (_, slotIndex) => {
     const mustBeSunday = kind === "weekly" && hasSundayOffRuleInWeek(employee.id) && slotIndex === count - 1;
-    const selectedIndex = mustBeSunday ? 6 : regularWeeklyIndexes[slotIndex];
-    const lockedText = mustBeSunday ? '<span class="locked-note">3ª folga: domingo obrigatório</span>' : "";
+    const sundayIsOff = Boolean(getAssignment(employee.id, 6)?.off);
+    const selectedIndex = mustBeSunday ? (sundayIsOff ? 6 : undefined) : regularWeeklyIndexes[slotIndex];
+    const lockedText = mustBeSunday
+      ? `<span class="locked-note">${sundayIsOff ? "3ª folga: domingo obrigatório" : "Aviso: domingo obrigatório não marcado"}</span>`
+      : "";
     return `
       <select class="leave-select" data-kind="${kind}" data-slot-index="${slotIndex}" data-employee-id="${employee.id}" aria-label="${kind === "weekly" ? "Folga semanal" : "Folga de feriado"} de ${escapeHtml(employee.name)}" ${mustBeSunday ? "disabled" : ""}>
         <option value="">Selecionar</option>
@@ -375,7 +474,8 @@ function getLeaveBalanceCounts(employeeId) {
     .filter(([, rule]) => rule.employeeId === employeeId && rule.note.includes("03 Domingos"))
     .map(([dateKey]) => dateKey);
   const currentWeekEnd = toInputDate(addDays(state.weekStart, 6));
-  const holidayPending = compensationDates.filter((dateKey) => dateKey >= state.weekStart).length;
+  const savedHolidayCompensations = countSavedHolidayCompensationsBefore(employeeId, state.weekStart);
+  const holidayPending = Math.max(0, compensationDates.filter((dateKey) => dateKey >= state.weekStart).length - savedHolidayCompensations);
   const sundayPending = sundayOffDates.filter((dateKey) => dateKey >= state.weekStart).length;
   const weeklyTakenThisWeek = getOffDayIndexesByKind(state.schedule, employeeId, "weekly").some((dayIndex) => {
     const dateKey = toInputDate(addDays(state.weekStart, dayIndex));
@@ -384,6 +484,13 @@ function getLeaveBalanceCounts(employeeId) {
 
   const weeklyBalance = needsExtraWeeklyOffForSunday(employeeId) ? 2 : 1;
   return { weekly: weeklyTakenThisWeek ? weeklyBalance : weeklyBalance, sunday: sundayPending, holiday: holidayPending };
+}
+
+function countSavedHolidayCompensationsBefore(employeeId, beforeWeekStart) {
+  return Object.entries(state.savedSchedules || {}).reduce((count, [weekStart, schedule]) => {
+    if (weekStart >= beforeWeekStart) return count;
+    return count + getOffDayIndexesByKind(schedule, employeeId, "holiday").length;
+  }, 0);
 }
 
 function needsExtraWeeklyOffForSunday(employeeId) {
@@ -416,10 +523,10 @@ function getOffDayIndexes(schedule, employeeId) {
 
 function getOffDayIndexesByKind(schedule, employeeId, kind) {
   return Object.entries(schedule || {})
-    .filter(([, row]) => {
+    .filter(([dayIndex, row]) => {
       const note = row?.[employeeId]?.note || "";
       if (!row?.[employeeId]?.off) return false;
-      if (kind === "weekly") return !note.includes("Feriado");
+      if (kind === "weekly") return !note.includes("Feriado") && (!isHoliday(Number(dayIndex)) || Number(dayIndex) === 6);
       return kind === "holiday" ? note.includes("Feriado") : note.includes("03 Domingos");
     })
     .map(([dayIndex]) => Number(dayIndex))
@@ -432,15 +539,48 @@ function hasSundayOffRuleInWeek(employeeId) {
 }
 
 function getSundayOffEmployeeId(dateKey) {
-  const fixedSundayRule = fixedOffRules[dateKey];
-  if (fixedSundayRule?.note.includes("03 Domingos")) return fixedSundayRule.employeeId;
-
   const target = new Date(`${dateKey}T00:00:00`);
   if (target.getDay() !== 0 || dateKey < sundayOffCycleStart) return null;
 
-  const cycleStart = new Date(`${sundayOffCycleStart}T00:00:00`);
-  const weeksSinceStart = Math.round((target - cycleStart) / (7 * 86400000));
-  return sundayOffCycle[weeksSinceStart % sundayOffCycle.length];
+  const streaks = Object.fromEntries(employees.map((employee) => [employee.id, employee.sundayStreak]));
+  let currentKey = sundayOffCycleStart;
+
+  while (currentKey <= dateKey) {
+    const fixedSundayRule = fixedOffRules[currentKey];
+    const fixedOffId = fixedSundayRule?.note.includes("03 Domingos") ? fixedSundayRule.employeeId : null;
+    const calculatedOffId = fixedOffId || employees.find((employee) => streaks[employee.id] >= 3)?.id || null;
+    const manualWorkers = state.specialDayWorkers?.[currentKey] || getSavedWorkerIdsForDate(currentKey);
+
+    if (currentKey === dateKey) return calculatedOffId;
+
+    const workerIds = manualWorkers || employees.filter((employee) => employee.id !== calculatedOffId).map((employee) => employee.id);
+    employees.forEach((employee) => {
+      streaks[employee.id] = workerIds.includes(employee.id) ? streaks[employee.id] + 1 : 0;
+    });
+
+    currentKey = toInputDate(addDays(currentKey, 7));
+  }
+
+  return null;
+}
+
+function getSavedWorkerIdsForDate(dateKey) {
+  const weekStart = toInputDate(getMonday(new Date(`${dateKey}T00:00:00`)));
+  const savedSchedule = state.savedSchedules?.[weekStart];
+  if (!savedSchedule) return null;
+
+  const dayIndex = getDayIndexBetween(weekStart, dateKey);
+  if (dayIndex < 0) return null;
+
+  return employees
+    .filter((employee) => !savedSchedule[dayIndex]?.[employee.id]?.off)
+    .map((employee) => employee.id);
+}
+
+function getDayIndexBetween(weekStart, dateKey) {
+  const start = new Date(`${weekStart}T00:00:00`);
+  const target = new Date(`${dateKey}T00:00:00`);
+  return Math.round((target - start) / 86400000);
 }
 
 function getAssignment(employeeId, dayIndex) {
@@ -490,10 +630,41 @@ function autoFillSchedule() {
     }
   });
 
+  applyDefaultSpecialDayStaffing(schedule);
+  applySpecialDayWorkerOverrides(schedule);
   applyCoverage(schedule);
 
   state.schedule = schedule;
   render();
+}
+
+function applySpecialDayWorkerOverrides(schedule) {
+  weekDays.forEach((_, dayIndex) => {
+    if (dayIndex !== 6 && !isHoliday(dayIndex)) return;
+    const dateKey = toInputDate(addDays(state.weekStart, dayIndex));
+    const workerIds = state.specialDayWorkers?.[dateKey];
+    if (!workerIds) return;
+
+    employees.forEach((employee) => {
+      schedule[dayIndex][employee.id] = workerIds.includes(employee.id)
+        ? getDefaultShift(employee.id, dayIndex)
+        : { off: true, note: "FOLGA" };
+    });
+  });
+}
+
+function applyDefaultSpecialDayStaffing(schedule) {
+  weekDays.forEach((_, dayIndex) => {
+    if (dayIndex !== 6 && !isHoliday(dayIndex)) return;
+
+    while (employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off).length > 3) {
+      const employee = [...employees]
+        .reverse()
+        .find((item) => !(dayIndex === 6 && hasSundayOffRuleInWeek(item.id)) && !schedule[dayIndex]?.[item.id]?.off);
+      if (!employee) return;
+      schedule[dayIndex][employee.id] = { off: true, note: "FOLGA" };
+    }
+  });
 }
 
 function getWeeklyOffDays() {
@@ -628,6 +799,73 @@ function setEmployeeOffSlot(employeeId, kind, slotIndex, targetDayIndex) {
   render();
 }
 
+function setSpecialDayWorker(employeeId, dayIndex, shouldWork) {
+  const nextSchedule = cloneSchedule(state.schedule);
+
+  nextSchedule[dayIndex][employeeId] = shouldWork
+    ? makeWorkAssignment(employeeId, dayIndex, nextSchedule)
+    : { off: true, note: "FOLGA" };
+
+  applyCoverage(nextSchedule);
+
+  const warnings = getSpecialDayRuleWarnings(nextSchedule, dayIndex);
+  state.schedule = nextSchedule;
+  saveSpecialDayWorkers(dayIndex, nextSchedule);
+  showValidation(warnings.length ? `Aviso: ${warnings.join(" ")}` : "Equipe do dia especial ajustada com sucesso.");
+  render();
+}
+
+function saveSpecialDayWorkers(dayIndex, schedule) {
+  const dateKey = toInputDate(addDays(state.weekStart, dayIndex));
+  state.specialDayWorkers[dateKey] = employees
+    .filter((employee) => !schedule[dayIndex]?.[employee.id]?.off)
+    .map((employee) => employee.id);
+}
+
+function getSpecialDayRuleWarnings(schedule, dayIndex) {
+  const warnings = [];
+  const workers = employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off);
+  const dayLabel = dayIndex === 6 ? "domingo" : "feriado";
+
+  if ((dayIndex === 6 || isHoliday(dayIndex)) && workers.length !== 3) {
+    warnings.push(`${capitalize(dayLabel)} com ${workers.length} funcionário(s) trabalhando violará a regra de 3 funcionários.`);
+  }
+
+  if (dayIndex === 6) {
+    employees.forEach((employee) => {
+      if (hasSundayOffRuleInWeek(employee.id) && !schedule[dayIndex]?.[employee.id]?.off) {
+        warnings.push(`${employee.name} trabalhando neste domingo violará a regra da folga obrigatória após 3 domingos trabalhados.`);
+      }
+    });
+  }
+
+  return warnings;
+}
+
+function rebalanceSpecialDayWorkers(schedule, dayIndex, changedEmployeeId, shouldWork) {
+  let workers = employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off);
+
+  while (workers.length > 3) {
+    const employeeToRest = [...workers].reverse().find((employee) => {
+      return employee.id !== changedEmployeeId && !(dayIndex === 6 && hasSundayOffRuleInWeek(employee.id));
+    });
+    if (!employeeToRest) return;
+    schedule[dayIndex][employeeToRest.id] = { off: true, note: "FOLGA" };
+    workers = employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off);
+  }
+
+  while (workers.length < 3) {
+    const employeeToWork = employees.find((employee) => {
+      if (employee.id === changedEmployeeId && !shouldWork) return false;
+      if (dayIndex === 6 && hasSundayOffRuleInWeek(employee.id)) return false;
+      return schedule[dayIndex]?.[employee.id]?.off;
+    });
+    if (!employeeToWork) return;
+    schedule[dayIndex][employeeToWork.id] = makeWorkAssignment(employeeToWork.id, dayIndex, schedule);
+    workers = employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off);
+  }
+}
+
 function getSelectableOffDayIndexes(schedule, employeeId, kind) {
   const indexes = getOffDayIndexesByKind(schedule, employeeId, kind);
   return kind === "weekly" && hasSundayOffRuleInWeek(employeeId)
@@ -735,6 +973,13 @@ function validateSchedule(schedule) {
   const sundayWorkers = employees.filter((employee) => !schedule[6]?.[employee.id]?.off);
   if (sundayWorkers.length !== 3) {
     return { valid: false, message: "Domingo precisa ter exatamente 3 funcionários trabalhando." };
+  }
+
+  for (const dayIndex of weekDays.map((_, index) => index).filter((index) => isHoliday(index))) {
+    const holidayWorkers = employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off);
+    if (holidayWorkers.length !== 3) {
+      return { valid: false, message: "Feriado precisa ter exatamente 3 funcionários trabalhando." };
+    }
   }
 
   for (const dayIndex of weekDays.map((_, index) => index)) {
@@ -882,12 +1127,15 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
+function capitalize(value) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
 els.weekForm.addEventListener("submit", (event) => {
   event.preventDefault();
   state.weekStart = mondayFromWeekNumber(els.weekNumber.value, els.weekYear.value);
-  state.schedule = {};
   showValidation("");
-  autoFillSchedule();
+  loadScheduleForCurrentWeek();
 });
 
 els.leaveTable.addEventListener("change", (event) => {
@@ -902,6 +1150,14 @@ els.leaveTable.addEventListener("change", (event) => {
     return;
   }
 });
+
+els.specialDaysTable.addEventListener("change", (event) => {
+  const checkbox = event.target.closest('input[type="checkbox"]');
+  if (!checkbox) return;
+  setSpecialDayWorker(checkbox.dataset.employeeId, Number(checkbox.dataset.dayIndex), checkbox.checked);
+});
+
+els.saveSchedule.addEventListener("click", saveCurrentSchedule);
 
 els.printSchedule.addEventListener("click", () => window.print());
 

@@ -29,6 +29,7 @@
               </div>
             </div>
             <button class="button secondary" type="submit">Atualizar semana</button>
+            <button class="button primary" id="saveSchedule" type="button">Salvar alterações</button>
             <button class="button secondary" id="printSchedule" type="button" title="Imprimir escala">
               Imprimir
             </button>
@@ -52,6 +53,11 @@
         <div class="schedule-scroll interval-block">
           <h2 class="print-title">ESCALA DE INTERVALOS</h2>
           <table class="pdf-table interval-table" id="intervalTable"></table>
+        </div>
+
+        <div class="schedule-scroll special-days-block">
+          <h2 class="print-title">DOMINGOS E FERIADOS</h2>
+          <table class="special-days-table" id="specialDaysTable"></table>
         </div>
 
         <div class="schedule-scroll leave-block">
