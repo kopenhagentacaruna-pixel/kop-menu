@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Escala de Trabalho</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="app-header">
+        <div>
+          <p class="eyebrow">Kopenhagen Tacaruna</p>
+          <h1>Escala de Trabalho</h1>
+        </div>
+      </header>
+
+      <section class="control-panel single" aria-label="Configuracoes da semana">
+        <form class="week-card" id="weekForm">
+          <div class="week-control-row">
+            <div class="week-fields">
+              <div>
+                <label for="weekNumber">Semana</label>
+                <input id="weekNumber" name="weekNumber" type="number" min="1" max="53" inputmode="numeric" />
+              </div>
+              <div>
+                <label for="weekYear">Ano</label>
+                <input id="weekYear" name="weekYear" type="number" min="2026" max="2099" inputmode="numeric" />
+              </div>
+            </div>
+            <button class="button secondary" type="submit">Atualizar semana</button>
+            <button class="button secondary" id="printSchedule" type="button" title="Imprimir escala">
+              Imprimir
+            </button>
+          </div>
+          <p class="week-picker-range" id="weekPickerRange">-</p>
+        </form>
+      </section>
+
+      <section class="schedule-panel printable" aria-label="Escala semanal">
+        <div class="section-heading no-print">
+          <div>
+            <h2>Semana</h2>
+            <p id="weekRange">-</p>
+          </div>
+        </div>
+
+        <div class="schedule-scroll">
+          <h2 class="print-title">ESCALA DE TRABALHO</h2>
+          <table class="pdf-table work-table" id="workTable"></table>
+        </div>
+
+        <div class="schedule-scroll interval-block">
+          <h2 class="print-title">ESCALA DE INTERVALOS</h2>
+          <table class="pdf-table interval-table" id="intervalTable"></table>
+        </div>
+
+        <div class="schedule-scroll leave-block">
+          <h2 class="print-title">ESCALA DE FOLGAS</h2>
+          <table class="leave-table" id="leaveTable"></table>
+        </div>
+        <p class="validation-message" id="validationMessage" aria-live="polite"></p>
+      </section>
+
+      <section class="warnings-panel" aria-label="Compensações de feriado">
+        <div class="section-heading">
+          <h2>Compensações de feriado</h2>
+          <p>Quem trabalhar em feriado aparece aqui com prazo de 30 dias.</p>
+        </div>
+        <ul id="holidayList" class="warnings-list"></ul>
+      </section>
+
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
