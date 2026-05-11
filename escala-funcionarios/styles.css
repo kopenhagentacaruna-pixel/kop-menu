@@ -41,10 +41,75 @@ button {
   cursor: pointer;
 }
 
+.brand-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  min-height: 78px;
+  padding: 16px max(16px, calc((100vw - 1180px) / 2));
+  background: var(--primary);
+  border-bottom: 4px solid var(--gold);
+  text-align: left;
+}
+
+.brand-bar img {
+  display: block;
+  width: min(150px, 48vw);
+  max-height: 40px;
+  object-fit: contain;
+  object-position: left center;
+  margin-left: -5px;
+  margin-right: -22px;
+  filter: brightness(0) invert(1);
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 0;
+  transform: translateX(-8px);
+  color: white;
+}
+
+.brand-title::before,
+.brand-title h1::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 28px;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.brand-title p {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.brand-title h1 {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.15;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
 .app-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 30px 0 42px;
+  padding: 22px 0 42px;
 }
 
 .app-header {
@@ -367,6 +432,19 @@ button:focus-visible {
   font-size: 0.64rem;
 }
 
+.pdf-table .blue-head th.holiday-head,
+.pdf-table .red-head th.holiday-head,
+.pdf-table .blue-head th.holiday-date-head,
+.pdf-table .red-head th.holiday-date-head {
+  background: #d59b52;
+  color: #2d1712;
+}
+
+.pdf-table .sub-head th.holiday-sub-head {
+  background: #fff0d7;
+  color: #603216;
+}
+
 .pdf-table .week-label {
   font-size: 0.62rem;
   font-weight: 400;
@@ -397,6 +475,10 @@ button:focus-visible {
   line-height: 1.18;
 }
 
+.pdf-table td.holiday-cell {
+  background: #fff8e8;
+}
+
 .pdf-table .table-employee-name,
 .pdf-table .role-cell {
   text-align: center;
@@ -422,6 +504,11 @@ button:focus-visible {
   font-size: 0.68rem;
   font-weight: 400;
   text-transform: uppercase;
+}
+
+.off-cell.holiday-cell {
+  background: #f8ddbc;
+  color: #603216;
 }
 
 .off-cell.sunday-off {
@@ -614,7 +701,7 @@ button:focus-visible {
 @media print {
   @page {
     size: A4 landscape;
-    margin: 6mm;
+    margin: 0;
   }
 
   :root {
@@ -626,23 +713,59 @@ button:focus-visible {
     -webkit-print-color-adjust: exact;
   }
 
+  html,
   body {
+    width: 297mm;
+    min-height: 210mm;
+  }
+
+  body {
+    margin: 0;
+    padding: 10mm 20mm 8mm;
+    box-sizing: border-box;
     background: white;
     color: #2d1712;
   }
 
   .app-shell {
-    width: auto;
+    width: 100%;
     margin: 0;
     padding: 0;
-    zoom: 0.86;
+    zoom: 0.9;
   }
 
+  .week-card,
+  .week-control-row,
+  .week-fields,
   .control-panel,
   .no-print,
   .validation-message,
   .text-button {
-    display: none;
+    display: none !important;
+  }
+
+  .brand-bar {
+    width: 100%;
+    min-height: 11mm;
+    margin: 0 0 2mm;
+    padding: 2mm 0;
+    border-bottom-width: 1.5mm;
+  }
+
+  .brand-bar img {
+    width: 35mm;
+    max-height: 8mm;
+    margin-left: 10mm;
+  }
+
+  .brand-title,
+  .brand-title h1 {
+    gap: 3mm;
+  }
+
+  .brand-title p,
+  .brand-title h1 {
+    font-size: 5.8pt;
   }
 
   .app-header {
@@ -677,22 +800,22 @@ button:focus-visible {
     border: 1px solid var(--line);
     border-radius: 0;
     break-inside: avoid;
-    margin: 0 0 3mm;
+    margin: 0 0 2mm;
   }
 
   .pdf-table {
     width: 100%;
     min-width: 0;
     table-layout: fixed;
-    font-size: 5.8pt;
+    font-size: 5.2pt;
   }
 
   .pdf-table .name-col {
-    width: 24mm;
+    width: 20mm;
   }
 
   .pdf-table .role-col {
-    width: 20mm;
+    width: 16mm;
   }
 
   .pdf-table .time-col {
@@ -702,22 +825,22 @@ button:focus-visible {
   .pdf-table th,
   .pdf-table td {
     border-color: var(--line);
-    padding: 1.35mm 0.8mm;
+    padding: 0.9mm 0.45mm;
   }
 
   .pdf-table th {
-    font-size: 5.1pt;
+    font-size: 4.7pt;
     line-height: 1.1;
   }
 
   .pdf-table td {
-    height: 6.8mm;
-    font-size: 5.8pt;
+    height: 5.6mm;
+    font-size: 5.1pt;
     line-height: 1.12;
   }
 
   .pdf-table .role-cell {
-    font-size: 5.2pt;
+    font-size: 4.6pt;
   }
 
   .pdf-table .week-label {
@@ -725,20 +848,20 @@ button:focus-visible {
   }
 
   .pdf-table .sub-head th {
-    font-size: 4.8pt;
+    font-size: 4.4pt;
   }
 
   .off-cell {
-    font-size: 5pt;
+    font-size: 4.6pt;
   }
 
   .print-title {
     margin: 0;
-    padding: 1.2mm 2mm;
+    padding: 0.9mm 1.5mm;
     border-bottom: 1px solid var(--line);
     background: #f5ead8;
     color: #3b1d17;
-    font-size: 7pt;
+    font-size: 6.2pt;
     font-weight: 600;
   }
 
@@ -755,12 +878,12 @@ button:focus-visible {
   .leave-table th,
   .leave-table td {
     border-color: var(--line);
-    padding: 1.2mm 1.5mm;
-    font-size: 5.8pt;
+    padding: 0.9mm 1mm;
+    font-size: 5.1pt;
   }
 
   .leave-table th {
-    font-size: 5.4pt;
+    font-size: 4.9pt;
   }
 
   .leave-select {
@@ -768,14 +891,14 @@ button:focus-visible {
     border: 0;
     background: transparent;
     padding: 0;
-    font-size: 5.8pt;
+    font-size: 5.1pt;
     appearance: none;
   }
 
   .locked-note,
   .no-balance,
   .balance-line {
-    font-size: 5.4pt;
+    font-size: 4.9pt;
   }
 
   .warnings-panel {
@@ -790,12 +913,12 @@ button:focus-visible {
 
   .warnings-panel h2 {
     margin-bottom: 0.5mm;
-    font-size: 7pt;
+    font-size: 6.2pt;
   }
 
   .warnings-panel p,
   .warnings-list li {
-    font-size: 5.8pt;
+    font-size: 5.1pt;
   }
 
   .warnings-list {

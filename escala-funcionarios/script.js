@@ -1,4 +1,4 @@
-const STORAGE_KEY = "escalaFuncionarios.v8";
+const STORAGE_KEY = "escalaFuncionarios.v9";
 const storeName = "Kopenhagen Tacaruna";
 const weekDays = ["segunda-feira", "terca-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sabado", "domingo"];
 const employees = [
@@ -13,6 +13,11 @@ const baseShiftsByEmployee = {
   jonatan: { start: "12:00", end: "20:00", breakStart: "16:00", breakEnd: "17:00" },
   rayanne: { start: "10:00", end: "18:00", breakStart: "14:00", breakEnd: "15:00" },
 };
+const sundayShifts = [
+  { start: "12:00", end: "21:00", breakStart: "15:00", breakEnd: "16:00" },
+  { start: "12:00", end: "21:00", breakStart: "16:00", breakEnd: "17:00" },
+  { start: "12:00", end: "21:00", breakStart: "17:00", breakEnd: "18:00" },
+];
 const preferredWeeklyOffDays = {
   rayanne: 0,
   ana: 3,
@@ -199,7 +204,7 @@ function holidayName(dayIndex) {
 }
 
 function dayShifts(dayIndex) {
-  return employees.map((employee) => getBaseShift(employee.id));
+  return employees.map((employee, workerIndex) => getDefaultShift(employee.id, dayIndex, workerIndex));
 }
 
 function dayHours(dayIndex) {
@@ -208,6 +213,11 @@ function dayHours(dayIndex) {
 
 function getBaseShift(employeeId) {
   return { ...baseShiftsByEmployee[employeeId] };
+}
+
+function getDefaultShift(employeeId, dayIndex, workerIndex = 0) {
+  if (dayIndex === 6 || isHoliday(dayIndex)) return { ...sundayShifts[workerIndex % sundayShifts.length] };
+  return getBaseShift(employeeId);
 }
 
 function render() {
@@ -230,8 +240,18 @@ function renderTables() {
 function buildTable(type) {
   const themeClass = type === "work" ? "blue-head" : "red-head";
   const rows = employees.map((employee) => buildEmployeeRow(employee, type)).join("");
-  const dayHeaders = weekDays.map((day) => `<th colspan="2">${day}</th>`).join("");
-  const subHeaders = weekDays.map(() => "<th>ENTRADA</th><th>SAIDA</th>").join("");
+  const dayHeaders = weekDays
+    .map((day, dayIndex) => `<th class="${isHoliday(dayIndex) ? "holiday-head" : ""}" colspan="2">${day}</th>`)
+    .join("");
+  const dateHeaders = weekDays
+    .map((_, dayIndex) => `<th class="${isHoliday(dayIndex) ? "holiday-date-head" : ""}" colspan="2">${formatDate(addDays(state.weekStart, dayIndex))}</th>`)
+    .join("");
+  const subHeaders = weekDays
+    .map((_, dayIndex) => {
+      const holidayClass = isHoliday(dayIndex) ? "holiday-sub-head" : "";
+      return `<th class="${holidayClass}">ENTRADA</th><th class="${holidayClass}">SAIDA</th>`;
+    })
+    .join("");
 
   return `
     <colgroup>
@@ -247,7 +267,7 @@ function buildTable(type) {
       <tr>
         <th>Nome Completo</th>
         <th>Cargo</th>
-        <th class="week-label" colspan="14">${weekFullLabel(state.weekStart)}</th>
+        ${dateHeaders}
       </tr>
       <tr class="sub-head">
         <th></th>
@@ -263,14 +283,15 @@ function buildEmployeeRow(employee, type) {
   const cells = weekDays
     .map((_, dayIndex) => {
       const item = getAssignment(employee.id, dayIndex);
+      const holidayClass = isHoliday(dayIndex) ? " holiday-cell" : "";
       if (!item || item.off) {
         const label = item?.note || "FOLGA";
         const special = label.includes("03 Domingos") ? " sunday-off" : "";
-        return `<td class="off-cell${special}" colspan="2">${escapeHtml(label)}</td>`;
+        return `<td class="off-cell${special}${holidayClass}" colspan="2">${escapeHtml(label)}</td>`;
       }
       const first = type === "work" ? item.start : item.breakStart;
       const second = type === "work" ? item.end : item.breakEnd;
-      return `<td>${first}</td><td>${second}</td>`;
+      return `<td class="${holidayClass}">${first}</td><td class="${holidayClass}">${second}</td>`;
     })
     .join("");
 
@@ -294,7 +315,7 @@ function buildLeaveTable() {
         <tr>
           <td class="table-employee-name">${escapeHtml(employee.name)}</td>
           <td class="sunday-off-cell">
-            ${buildLeaveSelectors(employee, "weekly", hasSundayOffRuleInWeek(employee.id) ? 1 : Math.max(balance.weekly, weeklyOffDayIndexes.length), weeklyOffDayIndexes)}
+            ${buildLeaveSelectors(employee, "weekly", Math.max(balance.weekly, weeklyOffDayIndexes.length), weeklyOffDayIndexes)}
           </td>
           <td>
             ${buildLeaveSelectors(employee, "holiday", Math.max(balance.holiday, holidayOffDayIndexes.length), holidayOffDayIndexes)}
@@ -326,9 +347,10 @@ function getHolidayCompensationCountInWeek(employeeId) {
 
 function buildLeaveSelectors(employee, kind, count, selectedIndexes) {
   if (count === 0) return '<span class="no-balance">Sem saldo</span>';
+  const regularWeeklyIndexes = kind === "weekly" ? selectedIndexes.filter((dayIndex) => dayIndex !== 6) : selectedIndexes;
   return Array.from({ length: count }, (_, slotIndex) => {
-    const mustBeSunday = kind === "weekly" && hasSundayOffRuleInWeek(employee.id);
-    const selectedIndex = mustBeSunday ? 6 : selectedIndexes[slotIndex];
+    const mustBeSunday = kind === "weekly" && hasSundayOffRuleInWeek(employee.id) && slotIndex === count - 1;
+    const selectedIndex = mustBeSunday ? 6 : regularWeeklyIndexes[slotIndex];
     const lockedText = mustBeSunday ? '<span class="locked-note">3ª folga: domingo obrigatório</span>' : "";
     return `
       <select class="leave-select" data-kind="${kind}" data-slot-index="${slotIndex}" data-employee-id="${employee.id}" aria-label="${kind === "weekly" ? "Folga semanal" : "Folga de feriado"} de ${escapeHtml(employee.name)}" ${mustBeSunday ? "disabled" : ""}>
@@ -360,7 +382,21 @@ function getLeaveBalanceCounts(employeeId) {
     return dateKey <= currentWeekEnd;
   });
 
-  return { weekly: weeklyTakenThisWeek ? 1 : 1, sunday: sundayPending, holiday: holidayPending };
+  const weeklyBalance = needsExtraWeeklyOffForSunday(employeeId) ? 2 : 1;
+  return { weekly: weeklyTakenThisWeek ? weeklyBalance : weeklyBalance, sunday: sundayPending, holiday: holidayPending };
+}
+
+function needsExtraWeeklyOffForSunday(employeeId) {
+  if (!hasSundayOffRuleInWeek(employeeId)) return false;
+  return !canAnticipateSundayOff(employeeId);
+}
+
+function canAnticipateSundayOff(employeeId) {
+  const sundayKey = toInputDate(addDays(state.weekStart, 6));
+  const requiredEmployeeId = getSundayOffEmployeeId(sundayKey);
+  if (requiredEmployeeId !== employeeId) return false;
+  const sundayWorkersIfChanged = employees.filter((employee) => employee.id !== employeeId).length;
+  return sundayWorkersIfChanged === 3 && !fixedOffRules[sundayKey]?.note.includes("03 Domingos");
 }
 
 function formatLeaveBalance(balance) {
@@ -424,7 +460,7 @@ function autoFillSchedule() {
     });
 
     employees.forEach((employee) => {
-      if (weeklyOffDays[employee.id] === dayIndex) {
+      if ((weeklyOffDays[employee.id] || []).includes(dayIndex)) {
         schedule[dayIndex][employee.id] = {
           off: true,
           note: hasSundayOffRuleInWeek(employee.id) && dayIndex === 6 ? "FOLGA - 03 Domingos" : "FOLGA",
@@ -463,9 +499,12 @@ function autoFillSchedule() {
 function getWeeklyOffDays() {
   const weeklyOffDays = {};
   employees.forEach((employee) => {
-    weeklyOffDays[employee.id] = hasSundayOffRuleInWeek(employee.id)
-      ? 6
-      : chooseWeeklyOffDay(employee.id, weeklyOffDays);
+    const regularOffDay = chooseWeeklyOffDay(employee.id, weeklyOffDays);
+    weeklyOffDays[employee.id] = needsExtraWeeklyOffForSunday(employee.id)
+      ? [regularOffDay, 6].filter((dayIndex) => dayIndex !== null)
+      : hasSundayOffRuleInWeek(employee.id)
+        ? [6]
+      : [regularOffDay].filter((dayIndex) => dayIndex !== null);
   });
   return weeklyOffDays;
 }
@@ -473,15 +512,15 @@ function getWeeklyOffDays() {
 function getWeeklyOffDayMap(schedule) {
   return Object.fromEntries(
     employees.map((employee) => {
-      const dayIndex = getOffDayIndexesByKind(schedule, employee.id, "weekly")[0];
-      return [employee.id, dayIndex ?? null];
+      const dayIndexes = getOffDayIndexesByKind(schedule, employee.id, "weekly");
+      return [employee.id, dayIndexes];
     })
   );
 }
 
 function chooseWeeklyOffDay(employeeId, weeklyOffDays) {
   const preferred = preferredWeeklyOffDays[employeeId] ?? 0;
-  const occupiedCounts = Object.values(weeklyOffDays).reduce((counts, dayIndex) => {
+  const occupiedCounts = Object.values(weeklyOffDays).flat().reduce((counts, dayIndex) => {
     if (dayIndex !== null && dayIndex !== undefined) counts[dayIndex] = (counts[dayIndex] || 0) + 1;
     return counts;
   }, {});
@@ -548,16 +587,25 @@ function moveEmployeeOffDay(employeeId, targetDayIndex) {
 
 function setEmployeeOffSlot(employeeId, kind, slotIndex, targetDayIndex) {
   const nextSchedule = cloneSchedule(state.schedule);
-  const selectedIndexes = getOffDayIndexesByKind(nextSchedule, employeeId, kind);
+  const selectedIndexes = getSelectableOffDayIndexes(nextSchedule, employeeId, kind);
   const currentDayIndex = selectedIndexes[slotIndex];
-  const note = kind === "holiday" ? "FOLGA - Feriado" : hasSundayOffRuleInWeek(employeeId) ? "FOLGA - 03 Domingos" : "FOLGA";
+  const note = kind === "holiday" ? "FOLGA - Feriado" : hasSundayOffRuleInWeek(employeeId) && targetDayIndex === 6 ? "FOLGA - 03 Domingos" : "FOLGA";
 
   if (currentDayIndex !== undefined) {
     nextSchedule[currentDayIndex][employeeId] = makeWorkAssignment(employeeId, currentDayIndex, nextSchedule);
   }
 
   if (kind === "weekly" && hasSundayOffRuleInWeek(employeeId) && targetDayIndex !== null && targetDayIndex !== 6) {
-    showValidation("Folga de 3 domingos precisa obrigatoriamente cair no domingo.");
+    const sundaySlotIndex = getLeaveBalanceCounts(employeeId).weekly - 1;
+    if (slotIndex === sundaySlotIndex) {
+      showValidation("Folga de 3 domingos precisa obrigatoriamente cair no domingo.");
+      render();
+      return;
+    }
+  }
+
+  if (kind === "weekly" && hasSundayOffRuleInWeek(employeeId) && targetDayIndex === 6 && slotIndex !== getLeaveBalanceCounts(employeeId).weekly - 1) {
+    showValidation("Domingo já está reservado para a folga obrigatória de 3 domingos.");
     render();
     return;
   }
@@ -580,23 +628,41 @@ function setEmployeeOffSlot(employeeId, kind, slotIndex, targetDayIndex) {
   render();
 }
 
+function getSelectableOffDayIndexes(schedule, employeeId, kind) {
+  const indexes = getOffDayIndexesByKind(schedule, employeeId, kind);
+  return kind === "weekly" && hasSundayOffRuleInWeek(employeeId)
+    ? indexes.filter((dayIndex) => dayIndex !== 6)
+    : indexes;
+}
+
 function cloneSchedule(schedule) {
   return JSON.parse(JSON.stringify(schedule || {}));
 }
 
 function makeWorkAssignment(employeeId, dayIndex, schedule) {
-  return getBaseShift(employeeId);
+  const workerIndex = employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off).findIndex((employee) => employee.id === employeeId);
+  return getDefaultShift(employeeId, dayIndex, Math.max(0, workerIndex));
 }
 
 function applyCoverage(schedule) {
   weekDays.forEach((_, dayIndex) => {
     employees.forEach((employee) => {
       if (!schedule[dayIndex]?.[employee.id]?.off) {
-        schedule[dayIndex][employee.id] = getBaseShift(employee.id);
+        schedule[dayIndex][employee.id] = getDefaultShift(employee.id, dayIndex);
       }
     });
     coverOffShifts(schedule, dayIndex);
+    normalizeSpecialDayShifts(schedule, dayIndex);
   });
+}
+
+function normalizeSpecialDayShifts(schedule, dayIndex) {
+  if (dayIndex !== 6 && !isHoliday(dayIndex)) return;
+  employees
+    .filter((employee) => !schedule[dayIndex]?.[employee.id]?.off)
+    .forEach((employee, workerIndex) => {
+      schedule[dayIndex][employee.id] = getDefaultShift(employee.id, dayIndex, workerIndex);
+    });
 }
 
 function coverOffShifts(schedule, dayIndex) {
@@ -604,7 +670,7 @@ function coverOffShifts(schedule, dayIndex) {
   const availableCoverIds = new Set(employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off).map((employee) => employee.id));
 
   offEmployees.forEach((offEmployee) => {
-    const shiftToCover = getBaseShift(offEmployee.id);
+    const shiftToCover = getDefaultShift(offEmployee.id, dayIndex);
     const alreadyCovered = employees.some((employee) => {
       const assignment = schedule[dayIndex]?.[employee.id];
       return employee.id !== offEmployee.id && !assignment?.off && hasSameShift(assignment, shiftToCover);
@@ -634,10 +700,13 @@ function validateSchedule(schedule) {
     if (weeklyOffDays.length === 0) {
       return { valid: false, message: `${employee.name} precisa ter uma folga semanal.` };
     }
-    if (weeklyOffDays.length > 1 && hasSundayOffRuleInWeek(employee.id)) {
-      return { valid: false, message: `${employee.name} já tem a folga obrigatória de domingo nesta semana.` };
+    if (hasSundayOffRuleInWeek(employee.id) && !weeklyOffDays.includes(6)) {
+      return { valid: false, message: `${employee.name} precisa manter a folga obrigatória no domingo.` };
     }
-    const invalidHolidayRest = weeklyOffDays.find((dayIndex) => isHoliday(dayIndex) && !hasSundayOffRuleInWeek(employee.id));
+    if (needsExtraWeeklyOffForSunday(employee.id) && weeklyOffDays.filter((dayIndex) => dayIndex !== 6).length === 0) {
+      return { valid: false, message: `${employee.name} precisa ter mais uma folga na semana além do domingo obrigatório.` };
+    }
+    const invalidHolidayRest = weeklyOffDays.find((dayIndex) => isHoliday(dayIndex) && dayIndex !== 6);
     if (invalidHolidayRest !== undefined) {
       return { valid: false, message: `${employee.name} não pode usar feriado como folga semanal. Escolha outro dia da semana.` };
     }
@@ -661,6 +730,11 @@ function validateSchedule(schedule) {
         return { valid: false, message: `Intervalo de ${employee.name} precisa começar entre 3h e 5h após a entrada.` };
       }
     }
+  }
+
+  const sundayWorkers = employees.filter((employee) => !schedule[6]?.[employee.id]?.off);
+  if (sundayWorkers.length !== 3) {
+    return { valid: false, message: "Domingo precisa ter exatamente 3 funcionários trabalhando." };
   }
 
   for (const dayIndex of weekDays.map((_, index) => index)) {
@@ -689,7 +763,7 @@ function getUncoveredOffEmployees(schedule, dayIndex) {
   const workers = employees.filter((employee) => !schedule[dayIndex]?.[employee.id]?.off);
   return employees.filter((offEmployee) => {
     if (!schedule[dayIndex]?.[offEmployee.id]?.off) return false;
-    const shiftToCover = getBaseShift(offEmployee.id);
+    const shiftToCover = getDefaultShift(offEmployee.id, dayIndex);
     return !workers.some((worker) => hasSameShift(schedule[dayIndex]?.[worker.id], shiftToCover));
   });
 }
