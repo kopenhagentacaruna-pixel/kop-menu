@@ -909,6 +909,13 @@ function coverOffShifts(schedule, dayIndex) {
 
   offEmployees.forEach((offEmployee) => {
     const shiftToCover = getDefaultShift(offEmployee.id, dayIndex);
+    const preferredCoverEmployee = getPreferredCoverEmployee(offEmployee, availableCoverIds);
+    if (preferredCoverEmployee) {
+      schedule[dayIndex][preferredCoverEmployee.id] = { ...shiftToCover, coverFor: offEmployee.id };
+      availableCoverIds.delete(preferredCoverEmployee.id);
+      return;
+    }
+
     const alreadyCovered = employees.some((employee) => {
       const assignment = schedule[dayIndex]?.[employee.id];
       return employee.id !== offEmployee.id && !assignment?.off && hasSameShift(assignment, shiftToCover);
@@ -921,6 +928,12 @@ function coverOffShifts(schedule, dayIndex) {
     schedule[dayIndex][coverEmployee.id] = { ...shiftToCover, coverFor: offEmployee.id };
     availableCoverIds.delete(coverEmployee.id);
   });
+}
+
+function getPreferredCoverEmployee(offEmployee, availableCoverIds) {
+  if (!["allan", "ana"].includes(offEmployee.id)) return null;
+  if (!availableCoverIds.has("jonatan")) return null;
+  return employees.find((employee) => employee.id === "jonatan") || null;
 }
 
 function hasSameShift(assignment, shift) {
