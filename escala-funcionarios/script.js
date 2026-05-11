@@ -14,10 +14,10 @@ const baseShiftsByEmployee = {
   rayanne: { start: "10:00", end: "18:00", breakStart: "14:00", breakEnd: "15:00" },
 };
 const preferredWeeklyOffDays = {
-  allan: 0,
-  rayanne: 1,
-  jonatan: 2,
+  rayanne: 0,
   ana: 3,
+  allan: 2,
+  jonatan: 4,
 };
 const sundayOffCycleStart = "2026-05-03";
 const sundayOffCycle = ["allan", "rayanne", "jonatan", "ana"];
