@@ -325,7 +325,7 @@
     "options": [
       {
         "label": "Unidade",
-        "price": 29.9
+        "price": 34.9
       }
     ]
   },
@@ -680,6 +680,76 @@
       {
         "label": "Unidade",
         "price": 29.9
+      }
+    ]
+  },
+  {
+    "id": "item-1783178425556-91d87dbd745928",
+    "name": "MINIONS - Milkshake de Banana",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "",
+    "type": "",
+    "image": "minions-milkshake-de-banana.jpg?v=1783178740727",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 35.9
+      }
+    ]
+  },
+  {
+    "id": "item-1783178530061-e0e7ac15c36b08",
+    "name": "MINIONS - Sundae de Banana Crumble",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "",
+    "type": "",
+    "image": "minions-sundae-de-banana-crumble.jpg?v=1783178718036",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 25.9
+      }
+    ]
+  },
+  {
+    "id": "item-1783178640819-d9a504ea4c6c68",
+    "name": "MININOS - Capuccino Banana Crumble",
+    "category": "bebidas-quentes",
+    "description": "",
+    "type": "",
+    "image": "mininos-capuccino-banana-crumble.jpg?v=1783178640857",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 26.9
+      }
+    ]
+  },
+  {
+    "id": "item-1783178932436-015e10913ee94",
+    "name": "Sundae Morango",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "",
+    "type": "",
+    "image": "sundae-morango.jpg?v=1783178932479",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 25.9
+      }
+    ]
+  },
+  {
+    "id": "item-1783179017168-59a1399bafd428",
+    "name": "Milkshake Morango",
+    "category": "sorvetes-sundaes-milkshakes",
+    "description": "Unidade = 36,90",
+    "type": "",
+    "image": "milkshake-morango.jpg?v=1783179017177",
+    "options": [
+      {
+        "label": "Unidade",
+        "price": 0
       }
     ]
   }
